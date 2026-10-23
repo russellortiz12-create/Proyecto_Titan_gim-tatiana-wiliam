@@ -37,8 +37,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'gimnasio',
+    
+    # Nuestras apps modulares del Titan Gym SENA:
+    'usuarios',
+    'centros',
+    'rutinas',
+    'seguimiento',
 ]
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
