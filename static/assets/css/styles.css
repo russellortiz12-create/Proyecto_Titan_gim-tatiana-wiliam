@@ -1,0 +1,3986 @@
+/* ==========================================================================
+   1. VARIABLES Y CONFIGURACIÓN GENERAL
+   ========================================================================== */
+:root {
+    --primary-color: #008744;     /* Verde institucional SENA */
+    --primary-hover: #006834;
+    --secondary-color: #0f172a;   /* Texto oscuro */
+    --bg-main: #f8fafc;           /* Fondo gris claro de la plataforma */
+    --bg-card: #ffffff;           /* Fondo blanco para tarjetas */
+    --border-color: #e2e8f0;      /* Color de líneas divisorias */
+    --text-muted: #64748b;        /* Textos secundarios / etiquetas */
+    --status-green: #10b981;      /* Color indicador Activo */
+    --font-family: 'Poppins', sans-serif;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--bg-main);
+    color: var(--secondary-color);
+}
+
+/* ==========================================================================
+   2. ESTRUCTURA Y LAYOUT BASE - SIDEBAR FIJA
+   ========================================================================== */
+
+/* Contenedor principal de toda la pantalla */
+.layout {
+    display: flex; /* Alinea la barra lateral y el contenido en fila */
+    min-height: 100vh; /* Garantiza que la altura ocupe como mínimo el 100% de la pantalla */
+}
+
+/* Barra lateral fija */
+.layout__sidebar {
+    position: fixed; /* Mantiene la barra fija en la pantalla; no se desplaza con el scroll principal */
+    top: 0;          /* Pega el borde superior de la barra al techo de la ventana */
+    left: 0;         /* Pega el borde izquierdo de la barra a la pared izquierda de la pantalla */
+    width: 260px;    /* Establece el ancho exacto y fijo de la barra lateral */
+    height: 100vh;   /* Forza a la barra lateral a medir exactamente el 100% del alto de la pantalla */
+    
+    background-color: #004d25; /* Cambia el color de fondo al verde oscuro institucional */
+    color: #ffffff;            /* Define el color del texto interno como blanco */
+    
+    display: flex;             /* Organiza el logo y los menús en dirección vertical */
+    flex-direction: column;    /* Coloca los elementos uno debajo del otro (Logo arriba, menú abajo) */
+    justify-content: space-between; /* Distribuye el contenido dejando el espacio sobrante al centro */
+    
+    padding: 1.5rem 1rem;      /* Crea un margen interno (1.5rem arriba/abajo, 1rem a los lados) */
+    z-index: 100;              /* Asegura que la barra lateral siempre quede sobre el contenido al hacer scroll */
+    
+    overflow-y: auto;          /* Si los botones del menú no caben verticalmente, activa scroll SOLO dentro de la barra */
+}
+
+/* Área de contenido principal (Ajuste obligatorio al usar position: fixed en el sidebar) */
+.layout__content {
+    flex: 1;                   /* Hace que el área de contenido tome el espacio restante horizontal */
+    margin-left: 260px;        /* Empuja el contenido 260px a la derecha para que la barra fija no lo tape */
+    padding: 2rem;             /* Define el espacio interno del contenido general */
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* Logo del SENA / TITAN ubicado en la parte superior del Sidebar */
+.sidebar__logo {
+    width: 140px;               /* Modifica el ancho de la imagen del logo a 140 píxeles */
+    display: block;              /* Convierte la imagen en un bloque para poder centrarla correctamente */
+    margin: 0 auto 2rem auto;    /* Centra la imagen horizontalmente (auto a los lados) y crea una separación inferior de 2rem respecto al menú */
+}
+
+/* Contenedor de la lista de botones del menú lateral */
+.menu__list {
+    list-style: none;            /* Elimina los puntos o viñetas por defecto de la lista (ul) */
+    display: flex;               /* Aplica un modelo flexible para ordenar los elementos del menú */
+    flex-direction: column;      /* Organiza los elementos en formato vertical (uno debajo de otro) */
+    gap: 0.5rem;                 /* Genera un espacio de 0.5rem (8px aprox) de separación entre cada opción del menú */
+}
+
+/* Enlaces individuales dentro de las opciones del menú */
+.menu__link {
+    display: flex;               /* Alinea el ícono y el texto en una sola fila dentro del botón */
+    align-items: center;         /* Centra verticalmente el ícono con el texto */
+    gap: 1rem;                   /* Crea una distancia de 1rem entre el ícono y el texto */
+    padding: 0.75rem 1rem;       /* Define el espacio interno del botón (0.75rem arriba/abajo, 1rem a los lados) */
+    color: #e2e8f0;              /* Cambia el color del texto e ícono a un gris claro visible sobre fondo oscuro */
+    text-decoration: none;       /* Elimina el subrayado por defecto que traen las etiquetas <a> */
+    border-radius: 8px;          /* Redondea las esquinas del botón con una curvatura de 8px */
+    transition: background 0.3s ease; /* Aplica una animación suave de 0.3 segundos al cambiar el color de fondo */
+}
+
+/* Estado al pasar el cursor (hover) y estado de la opción seleccionada actualmente (active) */
+.menu__link:hover, 
+.menu__link--active {
+    background-color: var(--primary-color); /* Cambia el color de fondo del botón al verde institucional SENA */
+    color: #ffffff;                         /* Cambia el color del texto e ícono a blanco puro para resaltar */
+}
+
+/* Área donde se renderiza todo el contenido dinámico de la página */
+.layout__content {
+    flex: 1;                     /* Permite que este contenedor tome todo el espacio disponible que deja el Sidebar */
+    padding: 2rem;               /* Agrega un espacio interno general de 2rem alrededor del contenido */
+    display: flex;               /* Activa flexbox para organizar las secciones principales verticalmente */
+    flex-direction: column;      /* Coloca cada bloque (Topbar, Métricas, Grids) uno debajo del otro */
+    gap: 2rem;                   /* Añade una separación uniforme de 2rem entre cada bloque contenedor principal */
+}
+
+/* ==========================================================================
+   3. ENCABEZADO SUPERIOR (TOPBAR)
+   ========================================================================== */
+
+/* Contenedor principal del encabezado (Título a la izquierda, perfil y notificaciones a la derecha) */
+.topbar {
+    display: flex;               /* Coloca el bloque de título y los botones de acción en la misma línea */
+    justify-content: space-between; /* Empuja el título a la izquierda extrema y los íconos a la derecha extrema */
+    align-items: center;         /* Centra verticalmente el texto del título con los botones/avatar */
+}
+
+/* Título principal de la página actual */
+.header__title {
+    font-size: 1.75rem;          /* Incrementa el tamaño del texto del título (28px aprox) */
+    font-weight: 700;            /* Define la letra en estilo negrita gruesa */
+}
+
+/* Subtítulo o texto explicativo bajo el título principal */
+.header__subtitle {
+    color: var(--text-muted);    /* Aplica un color gris suave para que el texto sea secundario */
+    font-size: 0.95rem;          /* Reduce ligeramente el tamaño de letra (15px aprox) */
+}
+
+/* Contenedor del lado derecho de la topbar (Ícono de notificación y avatar del usuario) */
+.topbar__actions {
+    display: flex;               /* Agrupa los elementos en una fila */
+    align-items: center;         /* Centra la campana y la foto de perfil en el mismo eje horizontal */
+    gap: 1.25rem;                /* Crea una separación horizontal de 1.25rem entre el botón de notificación y el avatar */
+}
+
+/* Botón circular para el ícono de notificaciones */
+.topbar__icon-btn {
+    background: var(--bg-card);  /* Define el fondo del botón en color blanco */
+    border: 1px solid var(--border-color); /* Aplica un borde fino en color gris claro */
+    padding: 0.6rem;             /* Define el relleno interno para darle volumen al botón */
+    border-radius: 50%;          /* Hace que el contenedor del botón sea un círculo perfecto */
+    cursor: pointer;             /* Cambia el puntero del mouse a una mano cuando se pasa sobre el botón */
+    position: relative;          /* Permite posicionar el punto rojo de notificación en base a este contenedor */
+    font-size: 1.1rem;           /* Modifica el tamaño del ícono dentro del botón */
+    color: var(--secondary-color); /* Ajusta el color del ícono al tono oscuro del texto */
+}
+
+/* Indicador visual de notificaciones no leídas (Punto rojo) */
+.notification-dot {
+    position: absolute;          /* Posiciona el punto exactamente en una esquina interna del botón */
+    top: 4px;                    /* Ubica el punto a 4px desde el borde superior del botón */
+    right: 4px;                  /* Ubica el punto a 4px desde el borde derecho del botón */
+    width: 8px;                  /* Modifica el ancho del indicador a 8px */
+    height: 8px;                 /* Modifica la altura del indicador a 8px */
+    background-color: #ef4444;   /* Cambia el color del punto a rojo de alerta */
+    border-radius: 50%;          /* Convierte el cuadrado de 8x8 en un círculo perfecto */
+}
+
+/* Imagen de foto de perfil en la Topbar */
+.topbar__avatar img {
+    width: 45px;                 /* Fija el ancho de la foto en 45px */
+    height: 45px;                /* Fija la altura de la foto en 45px */
+    border-radius: 50%;          /* Convierte la imagen en una forma totalmente circular */
+    object-fit: cover;           /* Evita que la foto de perfil se deforme o estire si no es cuadrada */
+}
+
+/* ==========================================================================
+   4. SECCIÓN DE MÉTRICAS Y TARJETAS PRINCIPALES
+   ========================================================================== */
+
+/* Grid contenedor que agrupa las tarjetas superiores de información */
+.dashboard__metrics {
+    display: grid;               /* Activa la maquetación en rejilla/columnas */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Crea columnas adaptables que miden mínimo 300px y se estiran por igual */
+    gap: 1.5rem;                 /* Otorga una separación de 1.5rem entre cada tarjeta del grid */
+}
+
+/* Tarjeta individual contenedora de métricas */
+.metric__card {
+    background-color: var(--bg-card); /* Ajusta el fondo de la tarjeta a blanco */
+    padding: 1.5rem;             /* Genera una separación interna de 1.5rem desde el borde hacia el contenido */
+    border-radius: 12px;          /* Redondea las esquinas de la tarjeta con 12px */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Aplica una sombra suave alrededor de la tarjeta */
+    display: flex;               /* Organiza el contenido interno con flexbox */
+    flex-direction: column;      /* Apila los textos, títulos e información verticalmente */
+    gap: 1rem;                   /* Añade 1rem de espacio entre los elementos dentro de la tarjeta */
+}
+
+/* Modificador opcional para tarjetas con contenido alineado al centro (ej: gráfica de anillo) */
+.metric__card--center {
+    align-items: center;         /* Centra horizontalmente los elementos como el gráfico o el texto */
+    text-align: center;          /* Centra todas las líneas de texto dentro del contenedor */
+}
+
+/* Cabecera interna superior de la tarjeta (Categoría a la izquierda, estado a la derecha) */
+.card__header {
+    display: flex;               /* Organiza el texto de categoría y estado en la misma fila */
+    justify-content: space-between; /* Alinea un elemento totalmente a la izquierda y el otro a la derecha */
+    align-items: center;         /* Centra ambos textos en el plano vertical */
+    width: 100%;                 /* Garantiza que ocupe todo el ancho interno de la tarjeta */
+}
+
+/* Etiqueta superior que indica la categoría o tipo de tarjeta */
+.card__label {
+    font-size: 0.85rem;          /* Define un tamaño de texto pequeño (13px aprox) */
+    color: var(--text-muted);    /* Asigna color gris tenue para no restar importancia al título */
+    font-weight: 600;            /* Aplica peso de letra seminegrita */
+    text-transform: uppercase;   /* Convierte automáticamente todo el texto a mayúsculas */
+}
+
+/* Indicador de estado "Activo" o habilitado dentro de las tarjetas */
+.card__status--active {
+    color: var(--status-green);  /* Aplica color verde indicador de éxito/activo */
+    font-size: 0.85rem;          /* Tamaño pequeño idéntico al de las etiquetas superiores */
+    font-weight: 600;            /* Define letra en seminegrita */
+}
+
+/* Título representativo de la tarjeta */
+.card__title {
+    font-size: 1.25rem;          /* Establece un tamaño destacado (20px aprox) */
+    font-weight: 700;            /* Aplica letra en negrita resaltada */
+}
+
+/* Grilla para mostrar datos en dos columnas (ej: Objetivo / Instructor) */
+.info-group {
+    display: grid;               /* Divide el contenedor en columnas */
+    grid-template-columns: 1fr 1fr; /* Crea exactamente dos columnas de igual tamaño (50% cada una) */
+    gap: 1rem;                   /* Agrega espacio de 1rem entre ambas columnas */
+    margin-top: 0.5rem;          /* Separa el grupo del contenido que tiene arriba */
+}
+
+/* Subtítulo de los datos en pareja */
+.info__label {
+    font-size: 0.8rem;           /* Define un texto en formato pequeño */
+    color: var(--text-muted);    /* Color gris secundario */
+}
+
+/* Valor o respuesta del dato mostrado en pareja */
+.info__value {
+    font-weight: 600;            /* Establece negrita tenue para resaltar el dato */
+    font-size: 0.95rem;          /* Define un tamaño estándar cómodo para lectura */
+}
+
+/* Gráfico de anillo circular para mostrar porcentajes */
+.chart-circle {
+    width: 90px;                 /* Define el ancho total del círculo externo a 90px */
+    height: 90px;                /* Define la altura total del círculo a 90px */
+    border-radius: 50%;          /* Transforma la caja cuadrada en un círculo */
+    background: conic-gradient(var(--primary-color) 60%, #e2e8f0 0); /* Pinta el gráfico: 60% de color verde y el 40% restante en color gris */
+    display: flex;               /* Permite centrar el texto interno */
+    align-items: center;         /* Centra el porcentaje verticalmente */
+    justify-content: center;     /* Centra el porcentaje horizontalmente */
+    position: relative;          /* Posiciona el elemento necesario para crear el efecto dona */
+    margin: 0.5rem 0;            /* Otorga espacio superior e inferior de 0.5rem */
+}
+
+/* Recorte interno para transformar el círculo lleno en una dona/anillo */
+.chart-circle::before {
+    content: "";                 /* Elemento pseudocódigo invisible requerido */
+    width: 70px;                 /* Ancho del círculo blanco interno */
+    height: 70px;                /* Altura del círculo blanco interno */
+    border-radius: 50%;          /* Convierte el fondo en un círculo perfecto */
+    background-color: var(--bg-card); /* Ajusta el centro del mismo color blanco de la tarjeta */
+    position: absolute;          /* Coloca la máscara justo en el centro del anillo */
+}
+
+/* Texto que indica el porcentaje dentro del anillo */
+.chart-circle span {
+    position: relative;          /* Eleva el texto por encima del recorte interno para que sea visible */
+    font-weight: 700;            /* Texto en negrita para máxima visibilidad */
+    font-size: 1.1rem;           /* Tamaño adecuado para entrar cómodamente en el centro del anillo */
+}
+
+/* ==========================================================================
+   5. BOTONES Y COMPONENTES REUTILIZABLES
+   ========================================================================== */
+
+/* Estilo base estándar para todos los botones del sistema */
+.btn {
+    display: inline-flex;        /* Mantiene el botón alineado con textos pero permite usar flexbox internamente */
+    align-items: center;         /* Centra verticalmente el ícono con el texto del botón */
+    justify-content: center;     /* Centra horizontalmente el contenido dentro del botón */
+    gap: 0.5rem;                 /* Añade espacio de 0.5rem entre el ícono y el texto del botón */
+    padding: 0.6rem 1.2rem;      /* Define el grosor/tamaño interno del botón (0.6rem arriba/abajo, 1.2rem lados) */
+    border-radius: 8px;          /* Curva las 4 esquinas del botón a 8px */
+    text-decoration: none;       /* Quita el subrayado si el botón se aplica a un enlace <a> */
+    font-size: 0.9rem;           /* Ajusta el tamaño de la letra a un estándar de 14px */
+    font-weight: 600;            /* Coloca el texto del botón en seminegrita */
+    transition: background 0.2s ease; /* Genera animación fluida al cambiar el color con el cursor */
+}
+
+/* Variante: Botón principal de acción */
+.btn--primary {
+    background-color: var(--primary-color); /* Fondo en verde institucional SENA */
+    color: #ffffff;                         /* Texto e ícono de color blanco */
+}
+
+/* Estado del botón principal al pasar el ratón por encima */
+.btn--primary:hover {
+    background-color: var(--primary-hover); /* Oscurece ligeramente el verde al hacer hover */
+}
+
+/* Variante: Botón secundario u opcional */
+.btn--secondary {
+    background-color: #f1f5f9;  /* Fondo gris bastante claro */
+    color: var(--secondary-color); /* Texto en tono oscuro principal */
+}
+
+/* Estado del botón secundario al pasar el ratón por encima */
+.btn--secondary:hover {
+    background-color: #e2e8f0;  /* Oscurece suavemente el tono de gris */
+}
+
+/* ==========================================================================
+   6. GRID SECUNDARIO (Sección del mensaje del instructor e info de cuenta)
+   ========================================================================== */
+
+/* Contenedor que divide la sección inferior en dos columnas asimétricas */
+.dashboard__grid {
+    display: grid;               /* Activa el diseño en rejilla */
+    grid-template-columns: 2fr 1fr; /* Divide el espacio: 2 partes (66%) para el mensaje y 1 parte (33%) para la cuenta */
+    gap: 1.5rem;                 /* Distancia de 1.5rem entre ambas columnas */
+}
+
+/* Tarjeta base empleada en la sección del grid secundario */
+.dashboard__card {
+    background: var(--bg-card);  /* Fondo blanco para la tarjeta */
+    padding: 1.5rem;             /* Relleno interno de 1.5rem */
+    border-radius: 12px;          /* Redondeo de bordes de 12px */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Sombra suave inferior */
+}
+
+/* Encabezado interno con línea divisoria dentro de la tarjeta secundaria */
+.dashboard__card .card__header {
+    display: flex;               /* Alinea ícono y título en formato horizontal */
+    align-items: center;         /* Centra verticalmente los elementos */
+    gap: 0.5rem;                 /* Separación de 0.5rem entre el ícono y el texto del encabezado */
+    margin-bottom: 1rem;          /* Espacio inferior respecto al texto del mensaje */
+    border-bottom: 1px solid var(--border-color); /* Agrega una línea divisoria inferior gris clara */
+    padding-bottom: 0.5rem;       /* Separación interna entre el texto y la línea divisoria */
+}
+
+/* Bloque contenedor de la cita o mensaje del instructor */
+blockquote {
+    font-style: italic;          /* Aplica cursiva al texto del mensaje */
+    background-color: #f8fafc;   /* Aplica un fondo gris casi blanco para resaltar el bloque */
+    padding: 1rem;               /* Otorga espacio interno al bloque de texto */
+    border-left: 4px solid var(--primary-color); /* Agrega una barra lateral gruesa de color verde a la izquierda */
+    margin-bottom: 1rem;          /* Espacio inferior respecto a la foto/nombre del instructor */
+    border-radius: 4px;          /* Redondea ligeramente las esquinas derechas del bloque */
+}
+
+/* Contenedor con los datos del autor del mensaje (Instructor) */
+.message__author {
+    display: flex;               /* Coloca el avatar pequeño y el nombre en la misma fila */
+    align-items: center;         /* Centra la imagen con el texto del nombre */
+    gap: 0.75rem;                /* Separación de 0.75rem entre la foto y el nombre */
+}
+
+/* Contenedor de la información del perfil del usuario dentro de la tarjeta de estado */
+.account__user-info {
+    display: flex;               /* Agrupa avatar y nombre en fila */
+    align-items: center;         /* Centra verticalmente */
+    gap: 0.75rem;                /* Espacio de 0.75rem entre imagen y texto */
+    margin-bottom: 1rem;          /* Separación inferior respecto a la lista de verificación */
+}
+
+/* Placeholder circular para cuando el usuario no tiene foto de perfil cargada */
+.avatar-placeholder {
+    width: 40px;                 /* Ajusta el ancho a 40px */
+    height: 40px;                /* Ajusta la altura a 40px */
+    border-radius: 50%;          /* Convierte el contenedor en un círculo */
+    background-color: var(--primary-color); /* Fondo en verde institucional SENA */
+    color: white;                /* Color blanco para las iniciales del usuario */
+    display: flex;               /* Permite centrar las iniciales */
+    align-items: center;         /* Centra las letras verticalmente */
+    justify-content: center;     /* Centra las letras horizontalmente */
+    font-weight: bold;           /* Asigna negrita a las iniciales */
+}
+
+/* Lista de verificación / requisitos del estado de la cuenta */
+.account__checklist {
+    list-style: none;            /* Quita las viñetas por defecto */
+    display: flex;               /* Permite ordenar los ítems */
+    flex-direction: column;      /* Apila cada ítem uno debajo de otro */
+    gap: 0.5rem;                 /* Espacio de 0.5rem entre cada ítem de la lista */
+    font-size: 0.9rem;           /* Ajusta el tamaño de la letra a 14px */
+}
+
+/* Ícono de confirmación (chulo/check) dentro de la lista de verificación */
+.account__checklist i {
+    color: var(--status-green);  /* Pinta el ícono con verde indicador de estado correcto */
+}
+
+
+
+/* ==========================================================================
+   7. ESTILOS DE LA PÁGINA: PERFIL DE USUARIO
+   ========================================================================== */
+
+/* Tarjeta superior principal de resumen del usuario (Header Profile) */
+.profile-header-card {
+    background-color: var(--bg-card); /* Ajusta el fondo de la tarjeta a blanco */
+    border-radius: 12px;               /* Redondea las esquinas del contenedor a 12px */
+    padding: 1.5rem 2rem;              /* Define espacio interno (1.5rem arriba/abajo, 2rem a los lados) */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Aplica una sombra suave en la parte inferior */
+    display: flex;                     /* Organiza la foto/datos a la izquierda y el botón de editar a la derecha */
+    justify-content: space-between;    /* Separa la información del usuario del botón de edición */
+    align-items: center;               /* Centra verticalmente los elementos internos */
+    gap: 1.5rem;                       /* Agrega un espacio mínimo entre los bloques */
+}
+
+/* Agrupador del avatar y los datos principales dentro del encabezado */
+.profile-header__main {
+    display: flex;        /* Coloca la foto de perfil al lado de la información del texto */
+    align-items: center;  /* Centra la foto verticalmente con respecto al texto */
+    gap: 1.5rem;          /* Otorga una distancia de 1.5rem entre la foto y los textos */
+}
+
+/* Imagen del avatar principal en la tarjeta de resumen */
+.profile-header__avatar img {
+    width: 80px;          /* Modifica el ancho de la foto de perfil a 80px */
+    height: 80px;         /* Modifica la altura de la foto a 80px */
+    border-radius: 50%;   /* Transforma la caja en un círculo perfecto */
+    object-fit: cover;    /* Evita que la foto de perfil se deforme o se estire */
+}
+
+/* Bloque contenedor del nombre, documento y etiquetas */
+.profile-header__info {
+    display: flex;          /* Activa flexbox para apilar los elementos */
+    flex-direction: column; /* Coloca el nombre arriba, la TI al medio y las etiquetas abajo */
+    gap: 0.3rem;            /* Genera una separación vertical pequeña de 0.3rem entre líneas */
+}
+
+/* Nombre completo del aprendiz */
+.profile-header__name {
+    font-size: 1.5rem;      /* Ajusta el tamaño de letra del nombre (24px aprox) */
+    font-weight: 700;       /* Define letra en negrita resaltada */
+}
+
+/* Documento de identidad secundario debajo del nombre */
+.profile-header__doc {
+    font-size: 0.9rem;      /* Reduce el tamaño del texto a 14px */
+    color: var(--text-muted); /* Asigna color gris secundario */
+}
+
+/* Contenedor horizontal para las etiquetas / badges */
+.profile-header__tags {
+    display: flex;          /* Coloca los badges uno al lado del otro */
+    flex-wrap: wrap;        /* Permite que las etiquetas pasen a la siguiente línea si no caben */
+    gap: 0.5rem;            /* Separa cada etiqueta por 0.5rem */
+    margin-top: 0.25rem;    /* Otorga un margen superior para distanciarlo del documento */
+}
+
+/* Estilo base para las etiquetas pequeñas (Badges) */
+.badge {
+    padding: 0.25rem 0.75rem; /* Otorga relleno interno pequeño (4px arriba/abajo, 12px a lados) */
+    border-radius: 20px;       /* Redondea completamente los bordes en formato píldora */
+    font-size: 0.8rem;         /* Modifica el tamaño de la letra a un estándar de 12px */
+    font-weight: 600;          /* Aplica texto en seminegrita */
+}
+
+/* Variante Badge Gris: Tipo de Usuario y Programa */
+.badge--gray {
+    background-color: #f1f5f9; /* Fondo gris claro */
+    color: var(--secondary-color); /* Texto en color oscuro principal */
+}
+
+/* Variante Badge Verde: Estado Activo */
+.badge--success {
+    background-color: #d1fae5; /* Fondo verde menta muy suave */
+    color: #047857;            /* Texto e ícono en verde oscuro enfático */
+}
+
+/* Botón "Editar perfil" dentro de la tarjeta de resumen */
+.btn--edit {
+    background-color: #ffffff;             /* Define el fondo del botón en blanco */
+    border: 1px solid var(--border-color); /* Agrega un borde gris fino alrededor */
+    color: var(--secondary-color);          /* Texto en color oscuro */
+    padding: 0.53rem 1.2rem;                /* Espaciado interno para dar volumen */
+    border-radius: 8px;                     /* Redondea las 4 esquinas a 8px */
+    font-weight: 600;                       /* Texto en seminegrita */
+    cursor: pointer;                        /* Cambia el cursor a mano al pasar por encima */
+    transition: background 0.2s ease;       /* Transición suave al hacer hover */
+}
+
+.btn--edit:hover {
+    background-color: #f8fafc;              /* Oscurece muy levemente el fondo al pasar el cursor */
+}
+
+/* Grid secundario que contiene los 3 bloques de datos (Personal, Académica, Contacto) */
+.profile-grid {
+    display: grid;                          /* Activa la maquetación en columnas */
+    grid-template-columns: repeat(2, 1fr);  /* Divide el espacio en 2 columnas iguales (50% cada una) */
+    gap: 1.5rem;                            /* Añade un espacio de 1.5rem entre tarjetas */
+}
+
+/* Contenedor de la tarjeta completa */
+.profile-card {
+    display: flex;
+    flex-direction: column; /* Asegura que el título principal quede arriba y el cuerpo abajo */
+    gap: 1rem;
+    width: 100%;
+}
+
+/* Título de la tarjeta */
+.profile-card__title {
+    margin: 0;
+    font-size: 1.25rem;
+    text-align: left; /* Asegura alineación a la izquierda */
+}
+
+/* Cuerpo con la rejilla de dos columnas */
+.profile-card__body {
+    display: grid ;
+    grid-template-columns: repeat(2, 1fr) ;
+    gap: 1.5rem ;
+    width: 100%;
+}
+
+/* Items individuales */
+.info-item--stacked {
+    display: flex ;
+    flex-direction: column ;
+    align-items: flex-start ; /* Alinea los textos a la izquierda, no al centro */
+    gap: 0.35rem ;
+}
+
+.info-item__header {
+    display: flex ;
+    align-items: center ;
+    gap: 0.5rem ;
+}
+
+/* Clase especial para que la Fecha de Nacimiento ocupe todo el ancho inferior */
+.info-item--full-width {
+    grid-column: span 2;
+}
+
+/* Ícono decorativo del dato */
+.info-item__icon {
+    color: var(--primary-color);            /* Pinta el ícono del color verde SENA */
+    font-size: 0.9rem;                      /* Define un tamaño pequeño adecuado */
+}
+
+/* Etiqueta del tipo de dato (ej: Nombres, Ficha, Email) */
+.info-item__label {
+    font-size: 0.8rem;                      /* Texto en formato pequeño (12px) */
+    color: var(--text-muted);               /* Color gris para denotar un dato secundario */
+}
+
+/* Dato o valor real del usuario (ej: William, 3387753) */
+.info-item__value {
+    font-size: 0.95rem;                     /* Tamaño de lectura cómodo */
+    font-weight: 600;                       /* Resalta en seminegrita para destacar la respuesta */
+    color: var(--secondary-color);          /* Texto oscuro principal */
+}
+
+/* Bloque destacado especial para el Contacto de Emergencia */
+.emergency-contact {
+    width: 100%;                            /* Fuerza al bloque a tomar todo el ancho de la tarjeta */
+    background-color: #f8fafc;              /* Fondo gris muy suave para diferencarlo */
+    border-left: 4px solid var(--primary-color); /* Agrega la barra vertical verde al lado izquierdo */
+    padding: 1rem;                          /* Espacio interno del bloque */
+    border-radius: 4px;                     /* Redondea suavemente las esquinas derechas */
+    margin-top: 0.5rem;                     /* Separa este bloque del email y teléfono */
+    display: flex;                          /* Apila las 3 líneas de información */
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+/* Título superior "Contacto de Emergencia" */
+.emergency-contact__label {
+    font-size: 0.8rem;                      /* Tamaño de texto pequeño */
+    color: var(--text-muted);               /* Color gris secundario */
+}
+
+/* Nombre de la persona de contacto */
+.emergency-contact__name {
+    font-size: 1rem;                        /* Tamaño estándar destacado */
+    font-weight: 700;                       /* Negrita */
+}
+
+/* Teléfono de la persona de contacto */
+.emergency-contact__phone {
+    font-size: 0.9rem;                      /* Tamaño de texto reducido */
+    color: var(--secondary-color);          /* Color oscuro principal */
+}
+
+/* ==========================================================================
+   10. ESTILOS DE LA PÁGINA: RUTINA DE USUARIO
+   ========================================================================== */
+
+/* --- 1. Tarjeta Resumen de Rutina --- */
+.routine-summary-card {
+    background-color: var(--bg-card);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.routine-summary__header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.routine-summary__icon {
+    font-size: 1.25rem;
+    color: var(--primary-color);
+}
+
+.routine-summary__header h2 {
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.routine-summary__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1.25rem;
+}
+
+.summary-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.summary-item__label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.summary-item__value {
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.summary-item--progress {
+    grid-column: 1 / -1;
+    margin-top: 0.5rem;
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.35rem;
+}
+
+.progress-percent {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background-color: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-bar__fill {
+    height: 100%;
+    background-color: var(--primary-color);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+/* --- 2. Alerta del Instructor --- */
+.instructor-alert {
+    background-color: #fff7ed;
+    border-left: 4px solid var(--primary-color);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.instructor-alert__icon {
+    color: var(--primary-color);
+    font-size: 1.25rem;
+    margin-top: 0.1rem;
+}
+
+.instructor-alert__text {
+    font-size: 0.9rem;
+    color: #9a3412;
+    line-height: 1.4;
+}
+
+/* --- 3. Días de Entrenamiento (Calendario Horizontal) --- */
+.training-days {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.section-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.days-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+}
+
+.day-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 0.75rem 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.day-card:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.day-card--active {
+    background-color: var(--primary-color);
+    color: #ffffff;
+    border-color: var(--primary-color);
+}
+
+.day-card__name {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.day-card__num {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.day-card__dot {
+    width: 6px;
+    height: 6px;
+    background-color: #cbd5e1;
+    border-radius: 50%;
+    margin-top: 0.2rem;
+}
+
+.day-card__dot--orange {
+    background-color: #ffffff;
+}
+
+.day-card--rest {
+    background-color: #f8fafc;
+    opacity: 0.7;
+}
+
+.day-card__rest-text {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+}
+
+/* --- 4. Lista de Ejercicios --- */
+.today-exercises {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Tarjeta Activa (Destacada) */
+.exercise-card--active {
+    background-color: var(--bg-card);
+    border: 2px solid var(--primary-color);
+    border-radius: 12px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.03);
+}
+
+.exercise-card__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.exercise-card__info {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.exercise-card__img {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    object-fit: cover;
+    background-color: #f1f5f9;
+}
+
+.tag--dark {
+    background-color: #1e293b;
+    color: #ffffff;
+    font-size: 0.65rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 700;
+}
+
+.exercise-card__title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-top: 0.2rem;
+}
+
+.exercise-card__subtitle {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.status-text--orange {
+    color: var(--primary-color);
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.exercise-card__metrics {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+    background-color: #f8fafc;
+    padding: 0.75rem;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.metric-box {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.metric-box__label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.metric-box__value {
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.btn--orange {
+    width: 100%;
+    background-color: var(--primary-color);
+    color: #ffffff;
+    border: none;
+    padding: 0.6rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.btn--orange:hover {
+    opacity: 0.9;
+}
+
+/* Ítems Colapsados (Lista simple) */
+.exercise-item {
+    background-color: var(--bg-card);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.exercise-item:hover {
+    background-color: #f8fafc;
+}
+
+.exercise-item__left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.exercise-item__icon {
+    width: 40px;
+    height: 40px;
+    background-color: #f1f5f9;
+    color: var(--secondary-color);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+}
+
+.exercise-item__title {
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.exercise-item__subtitle {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.exercise-item__arrow {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+/* ==========================================================================
+   11. ESTILOS DE LA PÁGINA: PROGRESO DEL USUARIO
+   ========================================================================== */
+
+/* --- 1. Tarjetas de Métricas Rápidas (KPIs) --- */
+.progress-kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.kpi-card {
+    background-color: var(--bg-card);
+    border-radius: 12px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.kpi-card__title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.kpi-card__circle {
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    background: conic-gradient(var(--primary-color) 78%, #e2e8f0 0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0.75rem;
+    position: relative;
+}
+
+.kpi-card__circle::before {
+    content: "";
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: var(--bg-card);
+}
+
+.kpi-card__circle span {
+    position: relative;
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.kpi-card__body {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.kpi-card__number {
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.kpi-card__badge--up {
+    color: #10b981;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.kpi-card__unit {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.streak-dots {
+    display: flex;
+    gap: 0.3rem;
+    margin-top: 0.5rem;
+}
+
+.streak-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #cbd5e1;
+}
+
+.streak-dot.active {
+    background-color: var(--primary-color);
+}
+
+/* --- 2. Layout Grid Principal --- */
+.progress-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 1.5rem;
+}
+
+.progress-grid__left,
+.progress-grid__right {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.card-box {
+    background-color: var(--bg-card);
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.card-box__title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.card-box__header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+/* --- 3. Gráficos y Tablas Izquierda --- */
+.bar-chart-weekly {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    height: 160px;
+    padding-top: 1rem;
+}
+
+.bar-chart-weekly__col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    height: 100%;
+    justify-content: flex-end;
+    width: 18%;
+}
+
+.bar-chart-weekly__bar {
+    width: 100%;
+    background-color: #cbd5e1;
+    border-radius: 6px 6px 0 0;
+    transition: height 0.3s ease;
+}
+
+.bar-chart-weekly__bar--highlight {
+    background-color: var(--primary-color);
+}
+
+.bar-chart-weekly__col span {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* Actividad Semanal */
+.activity-days {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.activity-day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    flex: 1;
+}
+
+.activity-day__name {
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.activity-day__box {
+    width: 100%;
+    height: 36px;
+    background-color: #f1f5f9;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+}
+
+.activity-day--success .activity-day__box {
+    background-color: #d1fae5;
+    color: #059669;
+}
+
+.activity-day--rest .activity-day__box {
+    background-color: #f1f5f9;
+    color: #64748b;
+}
+
+.activity-day--missed .activity-day__box {
+    background-color: #fee2e2;
+    color: #dc2626;
+}
+
+.activity-legend {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.legend-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 0.2rem;
+}
+
+.legend-dot--green { background-color: #059669; }
+.legend-dot--gray { background-color: #64748b; }
+.legend-dot--red { background-color: #dc2626; }
+
+/* Lista de Ejercicios Top */
+.top-exercises {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.exercise-row {
+    display: grid;
+    grid-template-columns: 120px 1fr 30px;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.85rem;
+}
+
+.exercise-row__bar-wrapper {
+    background-color: #f1f5f9;
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.exercise-row__bar {
+    height: 100%;
+    background-color: var(--primary-color);
+    border-radius: 4px;
+}
+
+.exercise-row__count {
+    text-align: right;
+    font-weight: 700;
+}
+
+/* --- 4. Columna Derecha (Seguimiento, Instructor, Logros) --- */
+.physical-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.physical-info__label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.physical-info__value {
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.physical-info__subtext {
+    display: block;
+    font-size: 0.75rem;
+}
+
+.physical-info__subtext--green {
+    color: #059669;
+}
+
+.weight-chart-mini {
+    height: 40px;
+    width: 100%;
+}
+
+.sparkline {
+    width: 100%;
+    height: 100%;
+}
+
+.goal-title {
+    display: block;
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+}
+
+.goal-progress {
+    margin-bottom: 1.25rem;
+}
+
+.goal-progress__text {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    margin-bottom: 0.35rem;
+}
+
+.assigned-instructor {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 0;
+    border-top: 1px solid var(--border-color);
+    margin-bottom: 1rem;
+}
+
+.assigned-instructor__avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.assigned-instructor__role {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+.assigned-instructor__name {
+    font-size: 0.9rem;
+}
+
+/* Logros Recientes */
+.achievements-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.achievement-card {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem;
+    background-color: #f8fafc;
+    border-radius: 8px;
+}
+
+.achievement-card__icon {
+    width: 36px;
+    height: 36px;
+    background-color: #feefea;
+    color: var(--primary-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.achievement-card__title {
+    display: block;
+    font-size: 0.85rem;
+}
+
+.achievement-card__desc {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* Nota de la Instructora */
+.card-box--border-green {
+    border-left: 4px solid #10b981;
+}
+
+.instructor-note__header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #059669;
+    margin-bottom: 0.5rem;
+}
+
+.instructor-note__header h2 {
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.instructor-note__body {
+    font-size: 0.85rem;
+    line-height: 1.4;
+    color: #334155;
+    font-style: italic;
+    margin-bottom: 0.5rem;
+}
+
+.instructor-note__author {
+    display: block;
+    text-align: right;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+/* ==========================================================================
+   12. ESTILOS DE LA PÁGINA: SUGERENCIAS Y FEEDBACK
+   ========================================================================== */
+
+/* --- Contenedor Principal del Formulario --- */
+.feedback-container {
+    max-width: 800px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.feedback-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* --- Grupos e Insumos del Formulario --- */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group__label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.optional-tag {
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--text-muted);
+}
+
+.form-group__input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--bg-card);
+    font-family: inherit;
+    font-size: 0.9rem;
+    color: var(--text-color);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group__input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.15);
+}
+
+.form-group__textarea {
+    resize: vertical;
+    min-height: 120px;
+    line-height: 1.5;
+}
+
+/* --- Área de Carga de Archivos (Drag & Drop) --- */
+.upload-box {
+    position: relative;
+    border: 2px dashed var(--border-color);
+    border-radius: 10px;
+    padding: 1.5rem;
+    text-align: center;
+    background-color: #f8fafc;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+    cursor: pointer;
+}
+
+.upload-box:hover {
+    border-color: var(--primary-color);
+    background-color: #fff7ed;
+}
+
+.upload-box__input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.upload-box__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    pointer-events: none;
+}
+
+.upload-box__icon {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 0.25rem;
+}
+
+.upload-box__text {
+    font-size: 0.85rem;
+    color: var(--text-color);
+}
+
+.upload-box__text strong {
+    color: var(--primary-color);
+}
+
+.upload-box__subtext {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* --- Botones de Acción --- */
+.feedback-form__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 0.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.btn--secondary {
+    background-color: #e2e8f0;
+    color: #475569;
+    border: none;
+    padding: 0.65rem 1.25rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn--secondary:hover {
+    background-color: #cbd5e1;
+}
+
+/* ==========================================================================
+   13. ESTILOS DE LA PÁGINA: INICIO ENTRENADOR / INSTRUCTOR
+   ========================================================================== */
+
+/* --- Cabecera del Contenido --- */
+.content__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.header__title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+.topbar__user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.topbar__avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.topbar__name {
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+/* --- Métricas del Entrenador --- */
+.content__metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.metric__card {
+    background-color: var(--bg-card);
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    color: var(--text-muted);
+}
+
+.card__label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.card__header i {
+    font-size: 1.1rem;
+    color: var(--primary-color);
+}
+
+.card__title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.card__status {
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.card__status--active {
+    color: #059669;
+}
+
+.card__status--warning {
+    color: #d97706;
+}
+
+/* --- Cuadrícula Principal (Dashboard) --- */
+.content__dashboard-main {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.5rem;
+}
+
+.dashboard__card {
+    background-color: var(--bg-card);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+/* Tarjeta Gestión Instructor */
+.instructor-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.instructor-card__header {
+    margin-bottom: 1.25rem;
+}
+
+.instructor-card__subtitle {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+}
+
+.instructor-card__details {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.instructor-card__item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.instructor-card__label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.instructor-card__value {
+    font-size: 0.95rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.instructor-card__value i {
+    color: var(--primary-color);
+}
+
+/* Botón de Acción Principal */
+.btn--primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: var(--primary-color);
+    color: #ffffff;
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+}
+
+.btn--primary:hover {
+    background-color: #c2410c;
+}
+
+/* Tarjeta Mensaje para Aprendices */
+.message-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-left: 4px solid var(--primary-color);
+}
+
+.message-card__header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.message-card__header h3 {
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.message-card__body {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    font-style: italic;
+    color: #334155;
+    margin-bottom: 1.25rem;
+}
+
+.message-card__footer {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.message-card__avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+}
+
+.message-card__author {
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.message-card__role {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* ==========================================================================
+   14. ESTILOS DE LA PÁGINA: PERFIL DE USUARIO Y MODAL
+   ========================================================================== */
+
+/* --- Tarjeta Banner de Perfil --- */
+.profile__header-card {
+    background-color: var(--bg-card);
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    margin-bottom: 1.5rem;
+}
+
+.profile__user-info {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.profile-header__avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid var(--primary-color);
+}
+
+.profile__avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile__details h2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 0.2rem;
+}
+
+.profile__role {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+}
+
+.profile__badges {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.badge {
+    background-color: #ffedd5;
+    color: var(--primary-color);
+    font-size: 0.75rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.badge--neutral {
+    background-color: #f1f5f9;
+    color: var(--text-muted);
+}
+
+.badge--success {
+    background-color: #d1fae5;
+    color: #047857;
+}
+
+/* --- Grillas e Información --- */
+.content__grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.5rem;
+}
+
+.grid__column {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.info__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+    margin-top: 1rem;
+}
+
+.info__stack {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-top: 1rem;
+}
+
+.info__item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.info__label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+}
+
+.info__value {
+    font-size: 0.9rem;
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+/* --- Especialidades --- */
+.specialties__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.specialty__tag {
+    background-color: #f8fafc;
+    border: 1px solid var(--border-color);
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #334155;
+}
+
+/* --- Ventana Modal (Editar Perfil) --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.modal-overlay.is-active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-container {
+    background-color: #ffffff;
+    width: 90%;
+    max-width: 650px;
+    max-height: 85vh;
+    border-radius: 12px;
+    overflow-y: auto;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    background-color: #ffffff;
+    z-index: 10;
+}
+
+.modal-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.modal-close {
+    background: transparent;
+    border: none;
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.modal-close:hover {
+    color: var(--text-color);
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-section {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modal-section-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.modal-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.input-group.full-width {
+    grid-column: span 2;
+}
+
+.input-group label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.form-input {
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 0.85rem;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.form-input:focus {
+    border-color: var(--primary-color);
+}
+
+.form-input:disabled {
+    background-color: #f8fafc;
+    color: var(--text-muted);
+    cursor: not-allowed;
+}
+
+.modal-actions-inline {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.btn--secondary {
+    background-color: #f1f5f9;
+    color: var(--text-color);
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    border: none;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.btn--secondary:hover {
+    background-color: #e2e8f0;
+}
+
+/* ==========================================================================
+   15. ESTILOS DE LA PÁGINA: GESTIÓN DE SOLICITUDES DE APRENDICES
+   ========================================================================== */
+
+/* --- Tarjetas de Métricas de Solicitudes (KPIs) --- */
+.metrics__grid--4 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.metric__icon-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+}
+
+.metric__icon-box--pending { 
+    background-color: #fff8e6; 
+    color: #d97706; 
+}
+
+.metric__icon-box--accepted { 
+    background-color: #e6f4ea; 
+    color: #137333; 
+}
+
+.metric__icon-box--rejected { 
+    background-color: #fce8e6; 
+    color: #c5221f; 
+}
+
+.metric__icon-box--total { 
+    background-color: #e0f2fe; 
+    color: #0284c7; 
+}
+
+/* --- Contenedor Principal de la Tabla --- */
+.table__container {
+    background-color: var(--bg-card);
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    padding: 1.5rem;
+}
+
+/* --- Barra de Herramientas (Filtros y Búsqueda) --- */
+.table__toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.toolbar__filters {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.filter__btn {
+    border: 1px solid var(--border-color);
+    background: transparent;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-family: inherit;
+    color: var(--text-muted);
+    transition: all 0.2s ease;
+}
+
+.filter__btn:hover,
+.filter__btn--active {
+    background-color: var(--primary-color);
+    color: #ffffff;
+    border-color: var(--primary-color);
+}
+
+.toolbar__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.search__box {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search__box i {
+    position: absolute;
+    left: 0.75rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.search__input {
+    padding: 0.5rem 0.75rem 0.5rem 2.25rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.search__input:focus {
+    border-color: var(--primary-color);
+}
+
+.select__filter {
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-family: inherit;
+    color: var(--secondary-color);
+    outline: none;
+    background-color: var(--bg-card);
+}
+
+.btn--refresh {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--secondary-color);
+    transition: background-color 0.2s ease;
+}
+
+.btn--refresh:hover {
+    background-color: #f1f5f9;
+}
+
+/* --- Tabla de Datos Responsive --- */
+.table__responsive {
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.9rem;
+}
+
+.data-table th,
+.data-table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: middle;
+}
+
+.data-table th {
+    background-color: #f8fafc;
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* --- Celdas Especiales --- */
+.user__cell {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.user__avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.user__avatar-initials {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: #e2e8f0;
+    color: var(--secondary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+.user__avatar-initials--grey {
+    background-color: #cbd5e1;
+    color: #475569;
+}
+
+.user__doc-type {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+/* --- Etiquetas de Estado (Badges) --- */
+.status__tag {
+    padding: 0.25rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.status__tag--pending { 
+    background-color: #fff8e6; 
+    color: #d97706; 
+}
+
+.status__tag--accepted { 
+    background-color: #e6f4ea; 
+    color: #137333; 
+}
+
+.status__tag--rejected { 
+    background-color: #fce8e6; 
+    color: #c5221f; 
+}
+
+/* --- Botones de Acción de Tabla --- */
+.actions__cell {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn--action-success {
+    background-color: var(--primary-color);
+    color: #ffffff;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+}
+
+.btn--action-danger {
+    background-color: #ef4444;
+    color: #ffffff;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+}
+
+.btn--action-success:hover { 
+    background-color: var(--primary-hover); 
+}
+
+.btn--action-danger:hover { 
+    background-color: #dc2626; 
+}
+
+/* --- Control de Paginación --- */
+.table__pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.5rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.pagination__controls {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.page__btn {
+    border: 1px solid var(--border-color);
+    background: transparent;
+    padding: 0.4rem 0.75rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: var(--secondary-color);
+    transition: all 0.2s ease;
+}
+
+.page__btn:hover,
+.page__btn--active {
+    background-color: var(--secondary-color);
+    color: #ffffff;
+    border-color: var(--secondary-color);
+}
+
+/* ==========================================================================
+   SECCIÓN: MÓDULO USUARIOS Y TABLAS
+   ========================================================================== */
+
+/* Contenedor de la Tabla */
+.table__container {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+/* Toolbar de Filtros y Búsqueda */
+.table__toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.toolbar__filters {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.filter__btn {
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+    padding: 0.5rem 0.85rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filter__btn:hover,
+.filter__btn--active {
+    background-color: #3b82f6;
+    color: #ffffff;
+    border-color: #3b82f6;
+}
+
+.toolbar__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.search__box {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search__box i {
+    position: absolute;
+    left: 0.85rem;
+    color: #94a3b8;
+    font-size: 0.9rem;
+}
+
+.search__input {
+    padding: 0.5rem 0.85rem 0.5rem 2.25rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.search__input:focus {
+    border-color: #3b82f6;
+}
+
+.select__filter {
+    padding: 0.5rem 0.85rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: #334155;
+    background-color: #ffffff;
+    cursor: pointer;
+}
+
+.btn--refresh {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    color: #64748b;
+    padding: 0.55rem 0.75rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.btn--refresh:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+/* Tabla de Datos y Celdas */
+.table__responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.9rem;
+}
+
+.data-table th {
+    background-color: #f8fafc;
+    color: #64748b;
+    font-weight: 600;
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid #e2e8f0;
+    white-space: nowrap;
+}
+
+.data-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #f1f5f9;
+    color: #334155;
+    vertical-align: middle;
+}
+
+.data-table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+/* Componente Usuario en Celda */
+.user__cell {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.user__avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.user__avatar-initials {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #3b82f6;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.user__avatar-initials--grey {
+    background-color: #64748b;
+}
+
+.user__doc-type {
+    display: block;
+    font-size: 0.75rem;
+    color: #64748b;
+}
+
+/* Paginación de Tabla */
+.table__pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    color: #64748b;
+    padding-top: 0.5rem;
+}
+
+.pagination__controls {
+    display: flex;
+    gap: 0.35rem;
+}
+
+.page__btn {
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    color: #334155;
+    padding: 0.35rem 0.65rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.page__btn--active,
+.page__btn:hover {
+    background: #3b82f6;
+    color: #ffffff;
+    border-color: #3b82f6;
+}
+
+/* ==========================================================================
+   SECCIÓN: COMPONENTES MODALES Y BOTONES PEQUEÑOS
+   ========================================================================== */
+
+/* Botón Tamaño Pequeño (Tabla) */
+.btn--sm {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+}
+
+/* Modal Overlay (Fondo Oscuro) */
+/* Overlay centrado con espacio interno */
+.modal__overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(15, 23, 42, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px; /* Margen para pantallas pequeñas */
+    box-sizing: border-box;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+    z-index: 1000;
+}
+
+/* Estado Activo del Modal (JavaScript) */
+.modal__overlay--active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Contenedor del Modal */
+.modal__container {
+    background: #ffffff;
+    width: 100%;
+    max-width: 650px;
+    max-height: 90vh; /* Máximo 90% del alto de la pantalla */
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column; /* Organiza header, body y footer */
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    overflow: hidden; /* Evita que el contenido sobresalga de los bordes redondeados */
+}
+
+.modal__overlay--active .modal__container {
+    transform: translateY(0);
+}
+
+/* Encabezado del Modal */
+/* Encabezado fijo */
+.modal__header {
+    padding: 16px 24px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.modal__title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.modal__close {
+    background: transparent;
+    border: none;
+    font-size: 1.25rem;
+    color: #64748b;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.modal__close:hover {
+    color: #ef4444;
+}
+
+/* Cuerpo y Formulario del Modal */
+.modal__body {
+    padding: 24px;
+    overflow-y: auto; /* Habilita el desplazamiento si el formulario es largo */
+    flex: 1;
+}
+
+.modal__section-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.modal__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.modal__footer {
+    padding: 16px 24px;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    flex-shrink: 0;
+}
+.form__group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.form__group--full {
+    grid-column: span 2;
+}
+
+.form__label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #334155;
+}
+
+.form__input {
+    padding: 0.6rem 0.85rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: #0f172a;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.form__input:focus {
+    border-color: #3b82f6;
+}
+
+/* Pie del Modal (Acciones) */
+.modal__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e2e8f0;
+}
+
+/* ==========================================================================
+   SECCIÓN: SEGUIMIENTO Y PROGRESO ENTRENADOR(LAYOUT & GRÁFICOS)
+   ========================================================================== */
+
+/* Grid Principal de Seguimiento (2 Columnas) */
+.metrics__grid--3{
+     display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+.tracking__layout {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+/* Panel Izquierdo: Lista de Usuarios */
+.users-panel {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.users-panel__title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.users-panel__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Tarjeta Individual de Usuario */
+.user-card {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 8px;
+    border: 1px solid #f1f5f9;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.user-card:hover {
+    background-color: #f8fafc;
+    border-color: #cbd5e1;
+}
+
+.user-card--active {
+    background-color: #eff6ff;
+    border-color: #3b82f6;
+}
+
+.user-card__avatar-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.user-card__info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.user-card__name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.user-card__subtext {
+    font-size: 0.75rem;
+    color: #64748b;
+}
+
+.user-card__subtext--alert {
+    color: #ef4444;
+    font-weight: 500;
+}
+
+/* Panel Derecho: Detalle de Progreso */
+.tracking__detail {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.profile-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.profile-card__main {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.profile-card__photo {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.profile-card__name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.profile-card__badges {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+}
+
+/* Gráficos de Progreso SVG */
+.progress__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.progress__box {
+    background-color: #f8fafc;
+    border-radius: 8px;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.progress__info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.progress__label {
+    font-size: 0.8rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.progress__value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.circle__container {
+    position: relative;
+    width: 54px;
+    height: 54px;
+}
+
+.circle__svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.circle__bg {
+    fill: none;
+    stroke: #e2e8f0;
+    stroke-width: 3.8;
+}
+
+.circle__fill {
+    fill: none;
+    stroke-width: 3.8;
+    stroke-linecap: round;
+}
+
+.circle__fill--green { stroke: #22c55e; }
+.circle__fill--blue { stroke: #3b82f6; }
+.circle__fill--orange { stroke: #f97316; }
+
+.circle__percentage {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+/* ==========================================================
+   NAVBAR FIX - LOGO AL CENTRO Y BOTONES A LA DERECHA
+   ========================================================== */
+
+/* Barra fija superior en verde SENA */
+.navbar-fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #39a900; /* Verde SENA */
+    height: 70px;
+    z-index: 1000;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Contenedor principal estructurado en 3 columnas */
+.navbar_container {
+    max-width: 1200px;
+    height: 100%;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr; /* Columna izquierda vacía para balance, centro para logo, derecha para botones */
+    align-items: center;
+}
+
+/* Logo centrado exactamente */
+.navbar__logo {
+    grid-column: 2; /* Se posiciona en la columna central */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.img-logo-inicio {
+    height: 100px; /* Ajusta la altura de tu logo */
+    width: auto;
+    object-fit: contain;
+}
+
+/* Botones alineados totalmente a la derecha */
+.navbar_nav {
+    grid-column: 3; /* Se posiciona en la columna derecha */
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Estilo para los botones de la barra */
+.btn--highlight {
+    background-color: #ffffff;
+    color: #39a900;
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.btn--highlight:hover {
+    background-color: #2e8600;
+    color: #ffffff;
+}
+/* ==========================================================
+   CARRUSEL Y TEXTO DESCRIPTIVO SUPERPUESTO
+   ========================================================== */
+
+/* Espaciado para que la barra fija no tape el carrusel */
+.hero-section {
+    margin-top: 70px; /* Igual a la altura de la navbar */
+    width: 100%;
+    height: calc(100vh - 70px);
+    position: relative;
+    overflow: hidden;
+}
+
+.carousel {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+/* Transición suave de diapositivas */
+.carousel__slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 1s ease-in-out, visibility 1s ease-in-out;
+}
+
+.carousel__slide.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Ajuste de la imagen de fondo */
+.carousel__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Capa oscura con texto adentro de la imagen */
+.carousel__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45); /* Sombra para legibilidad del texto */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #ffffff;
+    padding: 0 20px;
+}
+
+.carousel__title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.carousel__subtitle {
+    font-size: 1.25rem;
+    max-width: 600px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+/* Indicadores / Puntos en la parte inferior */
+.carousel__indicators {
+    position: absolute;
+    bottom: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 10;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.dot.active {
+    background-color: #39a900; /* Verde SENA */
+    width: 28px;
+    border-radius: 6px;
+}
+
+/* ==========================================================
+   ESTILOS DE LA PANTALLA DE INICIO DE SESIÓN (LOGIN)
+   ========================================================== */
+
+/* Estructura general de la pantalla de Login */
+.login-body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100vh;
+    background-color: #f8fafc;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-container {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+/* ----------------------------------------------------------
+   PANEL IZQUIERDO (Imagen, Marca y Logo)
+   ---------------------------------------------------------- */
+.login-left {
+    position: relative;
+    flex: 1;
+    background-color: #0d1b2a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.login-left__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.login-left__fondo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.35; /* Control de opacidad del fondo */
+    filter: brightness(0.8);
+}
+
+.login-left__content {
+    position: relative;
+    z-index: 2;
+    padding: 40px;
+    text-align: center;
+}
+
+.login-left__logo {
+    max-width: 280px;
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.4));
+    transition: transform 0.3s ease;
+}
+
+.login-left__logo:hover {
+    transform: scale(1.03);
+}
+
+/* ----------------------------------------------------------
+   PANEL DERECHO (Formulario de Ingreso)
+   ---------------------------------------------------------- */
+.login-right {
+    flex: 1;
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+.login-right__wrapper {
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Encabezado */
+.login-header {
+    margin-bottom: 32px;
+}
+
+.login-header__title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 8px;
+}
+
+.login-header__subtitle {
+    font-size: 0.95rem;
+    color: #64748b;
+}
+
+/* Campos de entrada */
+.form-group {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group__label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 8px;
+}
+
+.input-icon-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon {
+    position: absolute;
+    left: 16px;
+    color: #94a3b8;
+    font-size: 1rem;
+    pointer-events: none;
+}
+
+.form-group__input {
+    width: 100%;
+    padding: 12px 16px 12px 44px;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    color: #0f172a;
+    background-color: #f8fafc;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    box-sizing: border-box;
+}
+
+.form-group__input:focus {
+    outline: none;
+    border-color: #39a900; /* Verde SENA */
+    background-color: #ffffff;
+    box-shadow: 0 0 0 4px rgba(57, 169, 0, 0.12);
+}
+
+.form-group__hint {
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-top: 6px;
+}
+
+/* Botón Ojo (Mostrar/Ocultar contraseña) */
+.toggle-password {
+    position: absolute;
+    right: 14px;
+    background: none;
+    border: none;
+    color: #64748b;
+    cursor: pointer;
+    padding: 4px;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.toggle-password:hover {
+    color: #39a900;
+}
+
+/* Enlace recuperar contraseña */
+.login-form__forgot {
+    text-align: right;
+    margin-bottom: 24px;
+}
+
+.forgot-link {
+    font-size: 0.85rem;
+    color: #008744;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.forgot-link:hover {
+    text-decoration: underline;
+}
+
+/* Botón Entrar principal */
+.btn--login {
+    width: 100%;
+    padding: 14px;
+    background-color: #008744;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.btn--login:hover {
+    background-color: #2e8600;
+}
+
+.btn--login:active {
+    transform: scale(0.99);
+}
+
+/* Footer del Formulario */
+.login-form__footer {
+    margin-top: 24px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #64748b;
+}
+
+.register-link {
+    color: #008744;
+    font-weight: 600;
+    text-decoration: none;
+    margin-left: 4px;
+}
+
+.register-link:hover {
+    text-decoration: underline;
+}
+
+.recover-form__back {
+    margin-top: 16px;
+}
+
+.back-link {
+    color: #64748b;
+    font-size: 0.85rem;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.back-link:hover {
+    color: #0f172a;
+}
+
+/* Pie de Página SENA */
+.login-footer {
+    margin-top: 32px;
+    text-align: center;
+    font-size: 0.75rem;
+    color: #94a3b8;
+}
+
+.login-footer hr {
+    border: 0;
+    border-top: 1px solid #e2e8f0;
+    margin-bottom: 12px;
+}
+
+/* ==========================================================
+   ESTILOS DE LA PANTALLA DE REGISTRO DE USUARIOS (CREAR CUENTA)
+   ========================================================== */
+
+.recover-body {
+    margin: 0;
+    padding: 40px 0; /* Opciones de margen superior e inferior */
+    width: 100%;
+    min-height: 100vh;
+    background-color: #f1f5f9;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    align-items: flex-start; /* Cambiado de 'center' a 'flex-start' para evitar recortes superiores */
+    justify-content: center;
+    overflow-y: auto !important; /* Forzar la barra de desplazamiento vertical */
+}
+
+.recover-container {
+    width: 100%;
+    max-width: 800px;
+    padding: 0 16px;
+    margin: auto 0; /* Centrado vertical flexible */
+    box-sizing: border-box;
+}
+/* Tarjeta Principal */
+.recover-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 36px 40px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+}
+
+.recover-card--bordered {
+    border-top: 5px solid #39a900; /* Verde Institucional SENA */
+}
+
+/* Logo y Encabezado */
+.recover-card__logo-wrapper {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.recover-card__logo {
+    max-width: 160px;
+    height: auto;
+}
+
+.recover-card__header {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.recover-card__title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 8px;
+}
+
+.recover-card__description {
+    font-size: 0.9rem;
+    color: #64748b;
+    line-height: 1.5;
+}
+/* ==========================================================
+   SECCIÓN SELECCIÓN DE ROL
+   ========================================================== */
+.role-selection {
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.role-selection__title {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 12px;
+}
+
+.role-selection__buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.btn-role {
+    flex: 1;
+    padding: 12px 16px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #64748b;
+    background-color: #f1f5f9;
+    border: 2px solid #cbd5e1;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.25s ease;
+}
+
+.btn-role:hover {
+    border-color: #39a900;
+    color: #39a900;
+    background-color: #f8fafc;
+}
+
+/* Estado activo para el botón seleccionado */
+.btn-role--active {
+    background-color: #39a900;
+    border-color: #39a900;
+    color: #ffffff;
+}
+
+.btn-role--active:hover {
+    background-color: #2e8700;
+    color: #ffffff;
+}
+
+/* ----------------------------------------------------------
+   ESTRUCTURA DEL FORMULARIO EN GRID (2 COLUMNAS)
+   ---------------------------------------------------------- */
+.formulario__registro {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px 20px;
+}
+
+/* Ocupar ancho completo para foto si queda impar */
+.foto-registro {
+    grid-column: span 2;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group__label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 6px;
+}
+
+/* Contenedores e Inputs con Icono */
+.input-icon-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon {
+    position: absolute;
+    left: 14px;
+    color: #94a3b8;
+    font-size: 0.95rem;
+    pointer-events: none;
+}
+
+.form-group__input {
+    width: 100%;
+    padding: 10px 14px 10px 40px;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: #0f172a;
+    background-color: #f8fafc;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+/* Ajuste específico para etiquetas Select */
+select.form-group__input {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2094a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 36px;
+    cursor: pointer;
+}
+
+.form-group__input:focus {
+    outline: none;
+    border-color: #39a900;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(57, 169, 0, 0.12);
+}
+
+/* ----------------------------------------------------------
+   BOTONES Y ENLACES
+   ---------------------------------------------------------- */
+.btn--verify {
+    width: 100%;
+    padding: 12px;
+    background-color: #39a900;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.btn--verify:hover {
+    background-color: #2e8600;
+}
+
+.btn--verify:active {
+    transform: scale(0.99);
+}
+
+.recover-form__back {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.back-link {
+    color: #64748b;
+    font-size: 0.88rem;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.back-link:hover {
+    color: #39a900;
+}
+/*SECCIÓN DINÁMICA: APRENDIZ */
+
+.form-group-container{
+    grid-column: span 2;
+     display: grid;
+      grid-template-columns: repeat(2, 1fr); 
+      gap: 16px 20px;
+}
+/* ==========================================================
+   ESTILOS PANTALLA CONFIRMAR CÓDIGO (VERIFICACIÓN 6 DÍGITOS)
+   ========================================================== */
+
+/* Ícono Ilustrativo Central */
+.verify-icon-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.verify-icon-box {
+    width: 64px;
+    height: 64px;
+    background-color: #eef9e8; /* Verde SENA ultra claro */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.verify-icon {
+    font-size: 1.8rem;
+    color: #39a900; /* Verde SENA */
+}
+
+.verify-email {
+    color: #0f172a;
+    font-weight: 600;
+}
+
+.text-center {
+    text-align: center;
+}
+
+/* ----------------------------------------------------------
+   CASILLAS DEL CÓDIGO (INPUTS INDIVIDUALES)
+   ---------------------------------------------------------- */
+.code-inputs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px 0 28px 0;
+}
+
+.code-input {
+    width: 48px;
+    height: 56px;
+    text-align: center;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #0f172a;
+    background-color: #f8fafc;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.code-input:focus,
+.code-input--active {
+    outline: none;
+    border-color: #39a900;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(57, 169, 0, 0.15);
+}
+
+/* ----------------------------------------------------------
+   SECCIÓN REENVIAR Y TEMPORIZADOR
+   ---------------------------------------------------------- */
+.verify-resend {
+    margin-top: 24px;
+    text-align: center;
+    font-size: 0.85rem;
+}
+
+.verify-resend__text {
+    color: #64748b;
+    margin-bottom: 8px;
+}
+
+.resend-link {
+    color: #39a900;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.resend-link:hover {
+    text-decoration: underline;
+}
+
+.verify-resend__timer {
+    color: #94a3b8;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin: 0;
+}
+
+/* ==========================================================
+   ESTILOS PANTALLA CREAR NUEVA CONTRASEÑA
+   ========================================================== */
+
+/* Alineación para encabezado específico */
+.text-left {
+    text-align: left;
+}
+
+/* Ajuste de inputs sin icono a la izquierda */
+.form-group__input.input-no-left-icon {
+    padding-left: 16px;
+    padding-right: 44px; /* Espacio para el botón del ojo */
+}
+
+/* ----------------------------------------------------------
+   CAJA DE REQUISITOS DE CONTRASEÑA
+   ---------------------------------------------------------- */
+.password-requirements {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 24px;
+}
+
+.password-requirements__title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #475569;
+    margin: 0 0 10px 0;
+}
+
+.password-requirements__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.requirement {
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.2s ease;
+}
+
+/* Estado: Requisito cumplido */
+.requirement--valid {
+    color: #39a900; /* Verde SENA */
+    font-weight: 500;
+}
+
+/* Estado: Requisito pendiente/inválido */
+.requirement--invalid {
+    color: #94a3b8;
+}
+
+.requirement i {
+    font-size: 0.9rem;
+}
+
+
+/* ==========================================================================
+   9. ADAPTABILIDAD PARA CELULARES Y TABLETS (RESPONSIVE)
+   ========================================================================== */
+
+@media (max-width: 992px) {
+
+    .layout {
+        flex-direction: column;
+    }
+
+    .layout__sidebar {
+        position: static;
+        width: 100%;
+        height: auto;
+        padding: 1rem;
+        justify-content: flex-start;
+        gap: 1rem;
+    }
+
+    .sidebar__logo {
+        width: 100px;
+        margin: 0 auto 0.5rem auto;
+    }
+
+    .menu__list {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.25rem;
+    }
+
+    .menu__link {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.85rem;
+    }
+
+    .layout__content {
+        margin-left: 0;
+        padding: 1rem;
+        gap: 1.5rem;
+    }
+
+    .dashboard__metrics,
+    .dashboard__grid,
+    .profile-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-card--full {
+        grid-column: 1;
+    }
+
+    .profile-header-card {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1.25rem;
+    }
+
+    .profile-header__main {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .profile-header__avatar img {
+        width: 70px;
+        height: 70px;
+    }
+
+    .btn--edit {
+        width: 100%;
+        text-align: center;
+    }
+
+    /* Reajuste de la vista Rutina para teléfonos */
+    .days-grid {
+        grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+    }
+
+    .exercise-card__metrics {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+
+    /* Reajuste de la vista Progreso para pantallas pequeñas */
+    .progress-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .exercise-row {
+        grid-template-columns: 100px 1fr 25px;
+    }
+
+    /* Ajuste para la vista de Sugerencias en teléfonos */
+    .feedback-form__actions {
+        flex-direction: column-reverse;
+    }
+
+    .feedback-form__actions .btn {
+        width: 100%;
+    }
+    /* Ajustes para el Inicio del Entrenador */
+    .content__header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .content__dashboard-main {
+        grid-template-columns: 1fr;
+    }
+
+    .instructor-card__details {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    /* Adaptación del Perfil y Modal */
+    .profile__header-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .content__grid {
+        grid-template-columns: 1fr;
+    }
+
+    .info__grid, 
+    .modal-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .input-group.full-width {
+        grid-column: span 1;
+    }
+    .table__toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .toolbar__filters,
+    .toolbar__actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .search__box,
+    .search__input {
+        width: 100%;
+    }
+    .tracking__layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .topbar__actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .info-item--stacked {
+        min-width: 100%;
+    }
+    .table__pagination {
+        flex-direction: column;
+        gap: 0.85rem;
+        align-items: center;
+    }
+
+    .toolbar__filters {
+        flex-wrap: wrap;
+    }
+
+    .filter__btn {
+        flex: 1 1 auto;
+        text-align: center;
+    }
+
+    .select__filter {
+        width: 100%;
+    }
+    .code-inputs {
+        gap: 6px;
+    }
+    
+    .code-input {
+        width: 40px;
+        height: 48px;
+        font-size: 1.2rem;
+    }
+      .password-requirements {
+        padding: 12px;
+    }
+
+    .requirement {
+        font-size: 0.75rem;
+    }
+}
+/* Responsividad para Modales (@media) */
+@media (max-width: 640px) {
+    .modal__grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form__group--full {
+        grid-column: span 1;
+    }
+/* ----------------------------------------------------------
+   RESPONSIVO (Móviles y Tablets pequeñas)
+   ---------------------------------------------------------- */
+    .recover-card {
+        padding: 24px 20px;
+    }
+
+    .formulario__registro {
+        grid-template-columns: 1fr; /* Pasa a 1 sola columna en celular */
+        gap: 14px;
+    }
+
+    .foto-registro {
+        grid-column: span 1;
+    }
+
+    .recover-card__title {
+        font-size: 1.5rem;
+    }
+}
+/* ----------------------------------------------------------
+   RESPONSIVO (Pantallas pequeñas / Móviles)
+   ---------------------------------------------------------- */
+@media (max-width: 900px) {
+    .login-container {
+        flex-direction: column;
+    }
+
+    .login-left {
+        min-height: 220px;
+        flex: initial;
+    }
+
+    .login-left__logo {
+        max-width: 180px;
+    }
+
+    .login-right {
+        flex: 1;
+        padding: 30px 20px;
+    }
+}
+

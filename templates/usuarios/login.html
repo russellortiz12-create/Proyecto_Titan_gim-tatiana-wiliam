@@ -1,0 +1,77 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TITAN GYM SENA - TATIANA & WILLIAM</title>
+    
+    <!-- Rutas estáticas correctas con su respectiva ruta entre comillas -->
+    <link rel="stylesheet" href="{% static 'assets/css/reset.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/styles.css' %}"> 
+    
+    <!-- Fuentes e iconos -->
+    <link rel="stylesheet" href="{% static 'assets/fonts/fontawesome-free-6.1.2-web/css/all.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/fonts/poppins/poppins.css' %}">
+</head>
+<body class="login-body">
+
+    <div class="login-container">
+        
+        <!-- PANEL IZQUIERDO -->
+        <div class="login-left">
+            <div class="login-left__bg"></div>
+            <div class="login-left__overlay">
+                <img src="{% static 'assets/img/prensa-fondo-inicio.png' %}" alt="Bienvenidos a TITAN GYM" class="login-left__fondo">
+            </div>
+            <div class="login-left__content">
+                <img src="{% static 'assets/img/logo-titan-sena.png' %}" alt="Bienvenidos a TITAN GYM" class="login-left__logo">
+            </div>
+        </div>
+
+        <!-- PANEL DERECHO: FORMULARIO -->
+        <div class="login-right">
+            <div class="login-right__wrapper">
+                
+                <div class="login-header">
+                    <h1 class="login-header__title">Bienvenido</h1>
+                    <p class="login-header__subtitle">Inicia sesión para continuar en TITAN GYM SENA.</p>
+                </div>
+
+                <!-- FORMULARIO DE DJANGO -->
+                <!-- Nota: Más adelante conectaremos este form con el sistema de autenticación de Django -->
+                <form class="login-form" action="" method="post">
+                    {% csrf_token %} <!-- ¡Clave en Django! Token de seguridad obligatorio para formularios POST -->
+                    
+                    <div class="form-group">
+                        <label for="email" class="form-group__label">Correo electrónico institucional</label>
+                        <div class="input-icon-wrapper">
+                            <i class="fa-regular fa-envelope input-icon"></i>
+                            <input type="email" id="email" name="email" class="form-group__input" placeholder="usuario@soy.sena.edu.co" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password" class="form-group__label">Contraseña</label>
+                        <div class="input-icon-wrapper">
+                            <i class="fa-solid fa-lock input-icon"></i>
+                            <input type="password" id="password" name="password" class="form-group__input" placeholder="........" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn--login">ENTRAR</button>
+                </form>
+
+                <footer class="login-footer">
+                    <hr><br>
+                    <span> Tatiana Giraldo & William Ortiz</span><br>
+                    <span>ADSO - f.3387753 - 2026</span>
+                </footer>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'assets/js/login.js' %}"></script>
+</body>
+</html>
