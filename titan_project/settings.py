@@ -62,7 +62,7 @@ ROOT_URLCONF = 'titan_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],  # <--- Le dice a Django: "busca las plantillas en la carpeta templates de la raíz",
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
