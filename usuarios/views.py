@@ -4,6 +4,12 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required  
 
+def principal_view(request):
+    """
+    Renderiza la página de bienvenida (Landing Page / Portada).
+    """
+    return render(request, 'usuarios/principal.html')
+
 # ==========================================
 # VISTA DE REGISTRO DE NUEVOS USUARIOS
 # ==========================================

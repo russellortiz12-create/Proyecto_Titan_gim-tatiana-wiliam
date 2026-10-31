@@ -1,0 +1,81 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TITAN GYM SENA - TATIANA & WILLIAM</title>
+    
+    <!-- Hojas de estilo locales con tags de Django -->
+    <link rel="stylesheet" href="{% static 'assets/css/reset.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/styles.css' %}"> 
+    
+    <!-- Fuentes e iconos -->
+    <link rel="stylesheet" href="{% static 'assets/fonts/fontawesome-free-6.1.2-web/css/all.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/fonts/poppins/poppins.css' %}">
+</head>
+<body>
+
+    <!-- ==========================================================
+         PANTALLA INICIAL DE BIENVENIDA (LANDING PAGE)
+         ========================================================== -->
+    <header class="navbar-fixed">
+        <div class="navbar_container">
+            <!-- Logo en el lado izquierdo -->
+            <a href="#" class="navbar__logo">
+                <img src="{% static 'assets/img/logo-titan-sena.png' %}" alt="TITAN GYM SENA" class="img-logo-inicio">
+            </a>
+
+            <!-- Botones alineados a la derecha conectados con Django URLs -->
+            <nav class="navbar_nav">
+                <a href="{% url 'login' %}" class="btn--highlight">Entrar</a>
+                <a href="{% url 'registro' %}" class="btn--highlight">Registrarse</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- CONTENEDOR PRINCIPAL DEL HERO / CARRUSEL -->
+    <main class="hero-section">
+        <div class="carousel">
+            
+            <!-- Diapositiva 1 -->
+            <div class="carousel__slide active">
+                <img src="{% static 'assets/img/nosotros-gym.jpg' %}" alt="Instalaciones TITAN GYM" class="carousel__img">
+                <div class="carousel__overlay">
+                    <h1 class="carousel__title">Entrena con la mejor tecnología</h1>
+                    <p class="carousel__subtitle">Accede a tus rutinas y haz seguimiento de tu rendimiento físico.</p>
+                </div>
+            </div>
+
+            <!-- Diapositiva 2 -->
+            <div class="carousel__slide">
+                <img src="{% static 'assets/img/gym-instalaciones.jpg' %}" alt="Zona de Pesas y Máquinas" class="carousel__img">
+                <div class="carousel__overlay">
+                    <h1 class="carousel__title">Planes adaptados a tus objetivos</h1>
+                    <p class="carousel__subtitle">Mejora tu fuerza, resistencia y salud con la asesoría de instructores.</p>
+                </div>
+            </div>
+
+            <!-- Diapositiva 3 -->
+            <div class="carousel__slide"> 
+                <img src="{% static 'assets/img/horario-gym-sena.jpg' %}" alt="Comunidad SENA Gym" class="carousel__img">
+                <div class="carousel__overlay">
+                    <h1 class="carousel__title">Comunidad TITAN GYM SENA</h1>
+                    <p class="carousel__subtitle">Únete hoy y lleva el control completo de tu actividad física.</p>
+                </div>
+            </div>
+
+            <!-- Indicadores / Puntos del Carrusel -->
+            <div class="carousel__indicators">
+                <span class="dot active"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Script de carrusel con tag de Django -->
+    <script src="{% static 'assets/js/carrusel.js' %}"></script>
+</body>
+</html>

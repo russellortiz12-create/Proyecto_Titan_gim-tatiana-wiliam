@@ -2,8 +2,11 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    # Ruta del Login principal
-    path('', views.login_view, name='login'),
+    # Ruta de la Portada / Landing Page (Página principal del sitio)
+    path('', views.principal_view, name='principal'),
+    
+    # Rutas de Autenticación
+    path('login/', views.login_view, name='login'),
     path('registro/', views.registro_view, name='registro'),
     
     # Rutas del Módulo de Usuario (Navegación del Sidebar)
