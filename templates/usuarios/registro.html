@@ -1,17 +1,27 @@
-{% extends 'usuarios/base.html' %}
+
 {% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Usuario - TITAN GYM SENA</title>
 
-{% block title %}Registro de Usuario - TITAN GYM SENA{% endblock %}
+    <!-- 1. FUENTES Y LIBRERÍAS EXTERNAS -->
+    <link rel="stylesheet" href="{% static 'assets/fonts/poppins/poppins.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/fonts/fontawesome-free-6.1.2-web/css/all.css' %}">
 
-{% block extra_css %}
-    <style>
-        .is-hidden {
-            display: none !important;
-        }
-    </style>
-{% endblock %}
+    <!-- 2. RESET Y ESTILOS -->
+    <link rel="stylesheet" href="{% static 'assets/css/reset.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/styles.css' %}">
 
-{% block content %}
+        <style>
+            .is-hidden {
+                display: none !important;
+            }
+        </style>
+</head>
+
 <body class="recover-body">
 
     <div class="recover-container">
@@ -30,7 +40,7 @@
             <!-- FORMULARIO DE REGISTRO CONECTADO CON DJANGO -->
             <form action="{% url 'registro' %}" method="POST" class="recover-form" enctype="multipart/form-data">
                 {% csrf_token %} <!-- Token de seguridad obligatorio de Django para peticiones POST -->
-               
+            
                 <!-- SECCIÓN SELECCIÓN DE ROL -->
                 <div class="role-selection">
                     <label class="role-selection__title">Indica tu rol *</label>
@@ -246,10 +256,6 @@
             </form>
         </div>
     </div>
-
-</body>
-{% endblock %}
-
-{% block extra_js %}
     <script src="{% static 'assets/js/registro.js' %}"></script>
-{% endblock %}
+</body>
+
