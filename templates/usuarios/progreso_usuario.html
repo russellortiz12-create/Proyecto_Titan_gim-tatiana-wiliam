@@ -1,0 +1,258 @@
+{% extends 'usuarios/base.html' %}
+{% load static %}
+
+{% block title %}TITAN GYM SENA - Progreso de Usuario{% endblock %}
+
+{% block content %}
+        <main class="layout__content">
+
+            <!-- 1. ENCABEZADO DE LA VISTA -->
+            <header class="topbar">
+                <div>
+                    <h1 class="topbar__title">Progreso  </h1>
+                    <p class="header__subtitle">Consulta tu evolución y seguimiento de entrenamiento.</p>
+                </div>
+                <div class="topbar__actions">
+                    <select class="select-filter" aria-label="Filtrar por periodo">
+                        <option value="este-mes">📋 Este mes</option>
+                        <option value="mes-anterior"> 🗒️ Mes anterior</option>
+                    </select>
+                </div>   
+                <div class="topbar__actions">
+                    <button class="topbar__icon-btn" aria-label="Notificaciones">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="notification-dot"></span>
+                    </button>
+                    <div class="topbar__avatar">
+                        <img src="{% static 'assets/img/perfil-usuario-william.jpg' %}" alt="Foto de Perfil">
+                    </div>
+                </div>
+            </header>
+
+            <!-- 2. TARJETAS SUPERIORES DE MÉTRICAS RÁPIDAS (KPIs) -->
+            <section class="progress-kpis">
+                <article class="kpi-card">
+                    <span class="kpi-card__title">Cumplimiento</span>
+                    <div class="kpi-card__circle">
+                        <span>78%</span>
+                    </div>
+                </article>
+
+                <article class="kpi-card">
+                    <span class="kpi-card__title">SESIONES COMPLETADAS</span>
+                    <div class="kpi-card__body">
+                        <span class="kpi-card__number">18</span>
+                        <span class="kpi-card__badge kpi-card__badge--up"><i class="fa-solid fa-arrow-up"></i> 2</span>
+                    </div>
+                </article>
+
+                <article class="kpi-card">
+                    <span class="kpi-card__title">EJERCICIOS COMPLETADOS</span>
+                    <div class="kpi-card__body">
+                        <span class="kpi-card__number">72</span>
+                    </div>
+                </article>
+
+                <article class="kpi-card kpi-card--streak">
+                    <span class="kpi-card__title">RACHA ACTUAL</span>
+                    <div class="kpi-card__body">
+                        <span class="kpi-card__number">5</span>
+                        <span class="kpi-card__unit">Días</span>
+                    </div>
+                    <div class="streak-dots">
+                        <span class="streak-dot active"></span>
+                        <span class="streak-dot active"></span>
+                        <span class="streak-dot active"></span>
+                        <span class="streak-dot active"></span>
+                        <span class="streak-dot active"></span>
+                    </div>
+                </article>
+            </section>
+
+            <!-- 3. GRID PRINCIPAL DE MÓDULOS DE PROGRESO -->
+            <div class="progress-grid">
+
+                <div class="progress-grid__left">
+                    <section class="card-box">
+                        <h2 class="card-box__title">Cumplimiento de entrenamiento</h2>
+                        <div class="bar-chart-weekly">
+                            <div class="bar-chart-weekly__col">
+                                <div class="bar-chart-weekly__bar" style="height: 65%;"></div>
+                                <span>Sem 1</span>
+                            </div>
+                            <div class="bar-chart-weekly__col">
+                                <div class="bar-chart-weekly__bar" style="height: 75%;"></div>
+                                <span>Sem 2</span>
+                            </div>
+                            <div class="bar-chart-weekly__col">
+                                <div class="bar-chart-weekly__bar" style="height: 82%;"></div>
+                                <span>Sem 3</span>
+                            </div>
+                            <div class="bar-chart-weekly__col">
+                                <div class="bar-chart-weekly__bar bar-chart-weekly__bar--highlight" style="height: 90%;"></div>
+                                <span>Sem 4</span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="card-box">
+                        <h2 class="card-box__title">Actividad de entrenamiento</h2>
+                        <div class="activity-days">
+                            <div class="activity-day activity-day--success">
+                                <span class="activity-day__name">L</span>
+                                <div class="activity-day__box"><i class="fa-solid fa-check"></i></div>
+                            </div>
+                            <div class="activity-day activity-day--rest">
+                                <span class="activity-day__name">M</span>
+                                <div class="activity-day__box"><i class="fa-solid fa-bed"></i></div>
+                            </div>
+                            <div class="activity-day activity-day--success">
+                                <span class="activity-day__name">M</span>
+                                <div class="activity-day__box"><i class="fa-solid fa-check"></i></div>
+                            </div>
+                            <div class="activity-day activity-day--rest">
+                                <span class="activity-day__name">J</span>
+                                <div class="activity-day__box"><i class="fa-solid fa-bed"></i></div>
+                            </div>
+                            <div class="activity-day activity-day--missed">
+                                <span class="activity-day__name">V</span>
+                                <div class="activity-day__box"><i class="fa-solid fa-xmark"></i></div>
+                            </div>
+                            <div class="activity-day">
+                                <span class="activity-day__name">S</span>
+                                <div class="activity-day__box"></div>
+                            </div>
+                            <div class="activity-day">
+                                <span class="activity-day__name">D</span>
+                                <div class="activity-day__box"></div>
+                            </div>
+                        </div>
+
+                        <div class="activity-legend">
+                            <span><i class="legend-dot legend-dot--green"></i> Completada</span>
+                            <span><i class="legend-dot legend-dot--gray"></i> Descanso</span>
+                            <span><i class="legend-dot legend-dot--red"></i> Pendiente</span>
+                        </div>
+                    </section>
+
+                    <section class="card-box">
+                        <h2 class="card-box__title">Ejercicios más realizados</h2>
+                        <div class="top-exercises">
+                            <div class="exercise-row">
+                                <span class="exercise-row__name">Press de pecho</span>
+                                <div class="exercise-row__bar-wrapper">
+                                    <div class="exercise-row__bar" style="width: 100%;"></div>
+                                </div>
+                                <span class="exercise-row__count">12</span>
+                            </div>
+                            <div class="exercise-row">
+                                <span class="exercise-row__name">Jalón al pecho</span>
+                                <div class="exercise-row__bar-wrapper">
+                                    <div class="exercise-row__bar" style="width: 83%;"></div>
+                                </div>
+                                <span class="exercise-row__count">10</span>
+                            </div>
+                            <div class="exercise-row">
+                                <span class="exercise-row__name">Sentadilla</span>
+                                <div class="exercise-row__bar-wrapper">
+                                    <div class="exercise-row__bar" style="width: 75%;"></div>
+                                </div>
+                                <span class="exercise-row__count">9</span>
+                            </div>
+                            <div class="exercise-row">
+                                <span class="exercise-row__name">Curl de bíceps</span>
+                                <div class="exercise-row__bar-wrapper">
+                                    <div class="exercise-row__bar" style="width: 66%;"></div>
+                                </div>
+                                <span class="exercise-row__count">8</span>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <div class="progress-grid__right">
+                    <section class="card-box">
+                        <h2 class="card-box__title">Seguimiento Físico</h2>
+                        <div class="physical-info">
+                            <div>
+                                <span class="physical-info__label">Peso Actual</span>
+                                <strong class="physical-info__value">70 kg</strong>
+                                <span class="physical-info__subtext physical-info__subtext--green">↓ 2 kg (Inicial 72kg)</span>
+                            </div>
+                            <div>
+                                <span class="physical-info__label">Estatura</span>
+                                <strong class="physical-info__value">1.72 m</strong>
+                            </div>
+                        </div>
+                        <div class="weight-chart-mini">
+                            <svg viewBox="0 0 100 30" class="sparkline">
+                                <path d="M0 25 L20 22 L40 24 L60 18 L80 19 L100 8" fill="none" stroke="#0f2d4a" stroke-width="2.5"/>
+                                <polygon points="0,25 20,22 40,24 60,18 80,19 100,8 100,30 0,30" fill="rgba(15, 45, 74, 0.08)"/>
+                            </svg>
+                        </div>
+                    </section>
+
+                    <section class="card-box">
+                        <div class="card-box__header-flex">
+                            <h2 class="card-box__title">Mi Objetivo</h2>
+                            <span class="badge badge--success">Activo</span>
+                        </div>
+                        <strong class="goal-title">Mejoramiento de fuerza</strong>
+                        <div class="goal-progress">
+                            <div class="goal-progress__text">
+                                <span>Progreso general</span>
+                                <strong>69%</strong>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-bar__fill" style="width: 69%;"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="assigned-instructor">
+                            <img src="{% static 'assets/img/YO.jpg' %}" alt="Tatiana Giraldo" class="assigned-instructor__avatar">
+                            <div>
+                                <span class="assigned-instructor__role">Instructora Asignada</span>
+                                <strong class="assigned-instructor__name">Tatiana Giraldo</strong>
+                            </div>
+                        </div>
+                        
+                        <a href="{% url 'rutina_usuario' %}" class="btn btn--orange btn--full" style="text-align: center; text-decoration: none; display: block;">Ver mi rutina</a>
+                    </section>
+
+                    <section class="card-box">
+                        <h2 class="card-box__title">Logros Recientes</h2>
+                        <div class="achievements-list">
+                            <div class="achievement-card">
+                                <div class="achievement-card__icon"><i class="fa-solid fa-medal"></i></div>
+                                <div>
+                                    <strong class="achievement-card__title">5 sesiones consecutivas</strong>
+                                    <p class="achievement-card__desc">Consistencia perfecta.</p>
+                                </div>
+                            </div>
+                            <div class="achievement-card">
+                                <div class="achievement-card__icon"><i class="fa-solid fa-award"></i></div>
+                                <div>
+                                    <strong class="achievement-card__title">Primera semana</strong>
+                                    <p class="achievement-card__desc">Hito completado.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="card-box card-box--border-green">
+                        <div class="instructor-note">
+                            <div class="instructor-note__header">
+                                <i class="fa-regular fa-comment-dots"></i>
+                                <h2>Mensaje de tu instructora</h2>
+                            </div>
+                            <p class="instructor-note__body">
+                                "William, excelente progreso esta semana. Has mantenido una constancia admirable y veo mejoras significativas en tu técnica de sentadilla..."
+                            </p>
+                            <span class="instructor-note__author"> - Tatiana Giraldo - </span>
+                        </div>
+                    </section>
+                </div>
+
+            </div>
+        </main>
+{% endblock %}

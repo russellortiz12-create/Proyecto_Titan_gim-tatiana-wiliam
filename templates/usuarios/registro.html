@@ -1,0 +1,255 @@
+{% extends 'usuarios/base.html' %}
+{% load static %}
+
+{% block title %}Registro de Usuario - TITAN GYM SENA{% endblock %}
+
+{% block extra_css %}
+    <style>
+        .is-hidden {
+            display: none !important;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<body class="recover-body">
+
+    <div class="recover-container">
+        <div class="recover-card recover-card--bordered">
+            
+            <!-- LOGO SUPERIOR PARA CARACTERIZACIÓN -->
+            <div class="recover-card__logo-wrapper">
+                <img src="{% static 'assets/img/logo-titan-sena.png' %}" alt="Logo TITAN GYM SENA" class="recover-card__logo">
+            </div>
+
+            <div class="recover-card__header">
+                <h1 class="recover-card__title">Crear Cuenta de Usuario</h1>
+                <p class="recover-card__description">Diligencie los campos requeridos según el modelo de datos para registrarse en el sistema TITAN GYM.</p>
+            </div>
+
+            <!-- FORMULARIO DE REGISTRO CONECTADO CON DJANGO -->
+            <form action="{% url 'registro' %}" method="POST" class="recover-form" enctype="multipart/form-data">
+                {% csrf_token %} <!-- Token de seguridad obligatorio de Django para peticiones POST -->
+               
+                <!-- SECCIÓN SELECCIÓN DE ROL -->
+                <div class="role-selection">
+                    <label class="role-selection__title">Indica tu rol *</label>
+                    <div class="role-selection__buttons">
+                        <button type="button" id="btn-rol-aprendiz" class="btn-role btn-role--active">
+                            <i class="fa-solid fa-user-graduate"></i> Aprendiz
+                        </button>
+                        <button type="button" id="btn-rol-funcionario" class="btn-role">
+                            <i class="fa-solid fa-user-tie"></i> Funcionario
+                        </button>
+                    </div>
+                </div>
+
+                <div class="formulario__registro">
+                    
+                    <!-- Nombres -->
+                    <div class="form-group">
+                        <label for="nombres" class="form-group__label">Nombres *</label>
+                        <div class="input-icon-wrapper">
+                            <i class="fa-solid fa-user input-icon"></i>
+                            <input type="text" id="nombres" name="nombres" class="form-group__input" placeholder="Ej. Juan Andrés" required maxlength="100">
+                        </div>
+                    </div>
+
+                    <!-- Apellidos -->
+                    <div class="form-group">
+                        <label for="apellidos" class="form-group__label">Apellidos *</label>
+                        <div class="input-icon-wrapper">
+                            <i class="fa-solid fa-user input-icon"></i>
+                            <input type="text" id="apellidos" name="apellidos" class="form-group__input" placeholder="Ej. Pérez Gómez" required maxlength="100">
+                        </div>
+                    </div>
+
+                    <!-- Tipo de Documento -->
+                    <div class="form-group">
+                        <label for="id_tipo_documento" class="form-group__label">Tipo de Documento *</label>
+                        <div class="input-icon-wrapper">
+                            <i class="fa-solid fa-address-card input-icon"></i>
+                            <select id="id_tipo_documento" name="id_tipo_documento" class="form-group__input" required>
+                                <option value="" disabled selected>Seleccione...</option>
+                                <option value="1">Cédula de Ciudadanía</option>
+                                <option value="2">Tarjeta de Identidad</option>
+                                <option value="3">Cédula de Extranjería</option>
+                                <option value="4">Pasaporte</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Número de Documento -->
+                    <div class="form-group">
+                        <label for="numero_documento" class="form-group__label">Número de Documento *</label>
+                        <div class="input-icon-wrapper">
+                            <i class="fa-solid fa-hashtag input-icon"></i>
+                            <input type="text" id="numero_documento" name="numero_documento" class="form-group__input" placeholder="Ej. 1061234567" required maxlength="20">
+                        </div>
+                    </div>
+
+                    <!-- Fecha de Nacimiento -->
+                    <div class="form-group">
+                        <label for="fecha_nacimiento" class="form-group__label">Fecha de Nacimiento *</label>
+                        <div class="input-icon-wrapper">
+                            <i class="fa-solid fa-calendar-days input-icon"></i>
+                            <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" class="form-group__input" required>
+                        </div>
+                    </div>
+
+                    <!-- Sexo (ENUM) -->
+                    <div class="form-group">
+                        <label for="sexo" class="form-group__label">Sexo *</label>
+                        <div class="input-icon-wrapper">
+                            <i class="fa-solid fa-venus-mars input-icon"></i>
+                            <select id="sexo" name="sexo" class="form-group__input" required>
+                                <option value="" disabled selected>Seleccione...</option>
+                                <option value="MASCULINO">MASCULINO</option>
+                                <option value="FEMENINO">FEMENINO</option>
+                                <option value="OTRO">OTRO</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Correo Electrónico -->
+                    <div class="form-group">
+                        <label for="correo" class="form-group__label">Correo Electrónico *</label>
+                        <div class="input-icon-wrapper">
+                            <i class="fa-solid fa-envelope input-icon"></i>
+                            <input type="email" id="correo" name="correo" class="form-group__input" placeholder="usuario@soy.sena.edu.co" required maxlength="150">
+                        </div>
+                    </div>
+
+                    <!-- Contraseña -->
+                    <div class="form-group">
+                        <label for="contrasena" class="form-group__label">Contraseña *</label>
+                        <div class="input-icon-wrapper">
+                            <i class="fa-solid fa-lock input-icon"></i>
+                            <input type="password" id="contrasena" name="contrasena" class="form-group__input" placeholder="••••••••" required maxlength="255">
+                        </div>
+                    </div>
+
+                    <!-- Confirmar Contraseña -->
+                    <div class="form-group">
+                        <label for="confirmar_contrasena" class="form-group__label">Confirmar Contraseña *</label>
+                        <div class="input-icon-wrapper">
+                            <i class="fa-solid fa-lock input-icon"></i>
+                            <input type="password" id="confirmar_contrasena" name="confirmar_contrasena" class="form-group__input" placeholder="••••••••" required maxlength="255">
+                        </div>
+                    </div>
+
+                    <!-- Teléfono -->
+                    <div class="form-group">
+                        <label for="telefono" class="form-group__label">Teléfono / Celular</label>
+                        <div class="input-icon-wrapper">
+                            <i class="fa-solid fa-phone input-icon"></i>
+                            <input type="tel" id="telefono" name="telefono" class="form-group__input" placeholder="Ej. 3001234567" maxlength="20">
+                        </div>
+                    </div>
+
+                    <!-- SECCIÓN DINÁMICA: APRENDIZ -->
+                    <div id="seccion-aprendiz" class="form-group-container"> 
+                        <!-- Número de Ficha -->
+                        <div class="form-group">
+                            <label for="numero_ficha" class="form-group__label">Número de Ficha *</label>
+                            <div class="input-icon-wrapper">
+                                <i class="fa-solid fa-graduation-cap input-icon"></i>
+                                <input type="text" id="numero_ficha" name="numero_ficha" class="form-group__input" placeholder="Ej. 3387753" maxlength="20">
+                            </div>
+                        </div>
+
+                        <!-- Fecha Inicio Ficha -->
+                        <div class="form-group">
+                            <label for="fecha_inicio_ficha" class="form-group__label">Fecha Inicio de Ficha *</label>
+                            <div class="input-icon-wrapper">
+                                <i class="fa-solid fa-calendar-check input-icon"></i>
+                                <input type="date" id="fecha_inicio_ficha" name="fecha_inicio_ficha" class="form-group__input">
+                            </div>
+                        </div>
+
+                        <!-- Fecha Fin Ficha -->
+                        <div class="form-group">
+                            <label for="fecha_fin_ficha" class="form-group__label">Fecha Fin de Ficha *</label>
+                            <div class="input-icon-wrapper">
+                                <i class="fa-solid fa-calendar-xmark input-icon"></i>
+                                <input type="date" id="fecha_fin_ficha" name="fecha_fin_ficha" class="form-group__input">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECCIÓN DINÁMICA: FUNCIONARIO -->
+                    <div id="seccion-funcionario" class="form-group-container is-hidden" style="grid-column: span 2; display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px 20px;">
+                        <!-- TIPO DE FUNCIONARIO -->
+                        <div class="form-group">
+                            <label for="tipo_funcionario" class="form-group__label">Tipo de Funcionario *</label>
+                            <div class="input-icon-wrapper">
+                                <i class="fa-solid fa-user-gear input-icon"></i>
+                                <select id="tipo_funcionario" name="tipo_funcionario" class="form-group__input">
+                                    <option value="" disabled selected>Seleccione el tipo...</option>
+                                    <option value="PLANTA">Funcionario de Planta</option>
+                                    <option value="CONTRATISTA">Contratista</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- NÚMERO DE CONTRATO -->
+                        <div class="form-group is-hidden" id="grupo-numero-contrato">
+                            <label for="numero_contrato" class="form-group__label">Número de Contrato / Acto *</label>
+                            <div class="input-icon-wrapper">
+                                <i class="fa-solid fa-file-contract input-icon"></i>
+                                <input type="text" id="numero_contrato" name="numero_contrato" class="form-group__input" placeholder="Ej. CT-2026-098" maxlength="50">
+                            </div>
+                        </div>
+
+                        <!-- FECHA INICIO DE CONTRATO -->
+                        <div class="form-group is-hidden" id="grupo-fecha-inicio-contrato">
+                            <label for="fecha_inicio_contrato" class="form-group__label">Fecha Inicio de Contrato *</label>
+                            <div class="input-icon-wrapper">
+                                <i class="fa-solid fa-calendar-check input-icon"></i>
+                                <input type="date" id="fecha_inicio_contrato" name="fecha_inicio_contrato" class="form-group__input">
+                            </div>
+                        </div>
+
+                        <!-- FECHA FIN DE CONTRATO -->
+                        <div class="form-group is-hidden" id="grupo-fecha-fin-contrato">
+                            <label for="fecha_fin_contrato" class="form-group__label">Fecha Fin de Contrato *</label>
+                            <div class="input-icon-wrapper">
+                                <i class="fa-solid fa-calendar-xmark input-icon"></i>
+                                <input type="date" id="fecha_fin_contrato" name="fecha_fin_contrato" class="form-group__input">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Foto de Perfil -->
+                    <div class="form-group foto-registro">
+                        <label for="foto_perfil_url" class="form-group__label">Foto de Perfil (Opcional)</label>
+                        <div class="input-icon-wrapper">
+                            <i class="fa-solid fa-image input-icon"></i>
+                            <input type="text" id="foto_perfil_url" name="foto_perfil_url" class="form-group__input" placeholder="URL de la imagen o ruta del archivo" maxlength="300">
+                        </div>
+                    </div>
+                    
+                </div>
+
+                <!-- Botón de Registro -->
+                <button type="submit" class="btn--login btn--verify" style="margin-top: 1.5rem;">
+                    <i class="fa-solid fa-user-plus" style="margin-right: 0.5rem;"></i> Registrar Usuario
+                </button>
+
+                <!-- Enlace de Retorno al Login -->
+                <div class="recover-form__back">
+                    <a href="{% url 'login' %}" class="back-link">
+                        <i class="fa-solid fa-arrow-left"></i> ¿Ya tienes cuenta? Inicia Sesión
+                    </a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+</body>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'assets/js/registro.js' %}"></script>
+{% endblock %}

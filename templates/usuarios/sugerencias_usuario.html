@@ -1,0 +1,75 @@
+{% extends 'usuarios/base.html' %}
+{% load static %}
+
+{% block title %}TITAN GYM SENA - Sugerencias y Comentarios{% endblock %}
+
+{% block content %}
+        <main class="layout__content">
+
+            <!-- 1. ENCABEZADO DE LA VISTA -->
+            <header class="topbar">
+                <div class="topbar__greeting">
+                    <h1 class="topbar__title">Sugerencias y Comentarios </h1>
+                    <p class="header__subtitle">Tu opinión nos ayuda a mejorar la experiencia en TITAN GYM SENA.</p>
+                </div>
+                <div class="topbar__actions">
+                    <button class="topbar__icon-btn" aria-label="Notificaciones">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="notification-dot"></span>
+                    </button>
+                    <div class="topbar__avatar">
+                        <img src="{% static 'assets/img/perfil-usuario-william.jpg' %}" alt="Foto de Perfil">
+                    </div>
+                </div>
+            </header>
+
+            <!-- 2. FORMULARIO DE SUGERENCIAS -->
+            <section class="feedback-container">
+                <form class="card-box feedback-form" method="POST">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label for="feedback-type" class="form-group__label">Tipo de solicitud</label>
+                        <select id="feedback-type" name="feedback-type" class="form-group__input select-filter" required>
+                            <option value="" disabled selected>Selecciona una opción...</option>
+                            <option value="felicitacion">🎉 Felicitaciones / Reconocimiento</option>
+                            <option value="mejora">💡 Sugerencia de mejora</option>
+                            <option value="incomodidad">⚠️ Incomodidad o Reclamo</option>
+                            <option value="maquinaria">🏋️ Reporte de maquinaria / Instalaciones</option>
+                            <option value="otro">📌 Otro asunto</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="feedback-message" class="form-group__label">Detalle de tu sugerencia o comentario</label>
+                        <textarea 
+                            id="feedback-message" 
+                            name="feedback-message" 
+                            class="form-group__input form-group__textarea" 
+                            rows="5" 
+                            placeholder="Escribe aquí tu mensaje de forma detallada..." 
+                            required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-group__label">Adjuntar evidencia <span class="optional-tag">(Opcional)</span></label>
+                        <div class="upload-box">
+                            <input type="file" id="feedback-file" class="upload-box__input" accept="image/*,.pdf">
+                            <label for="feedback-file" class="upload-box__content">
+                                <i class="fa-solid fa-cloud-arrow-up upload-box__icon"></i>
+                                <span class="upload-box__text"><strong>Haz clic para subir un archivo</strong> o arrástralo aquí</span>
+                                <span class="upload-box__subtext">Formatos permitidos: JPG, PNG, PDF (Máx. 5MB)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="feedback-form__actions">
+                        <a href="{% url 'index_usuario' %}" class="btn btn--secondary" style="text-decoration: none; text-align: center; display: inline-block; line-height: normal;">Cancelar</a>
+                        <button type="submit" class="btn btn--orange">Enviar sugerencia</button>
+                    </div>
+
+                </form>
+            </section>
+
+        </main>
+{% endblock %}

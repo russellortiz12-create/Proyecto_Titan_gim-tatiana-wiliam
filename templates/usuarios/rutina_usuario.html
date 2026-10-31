@@ -1,0 +1,216 @@
+{% extends 'usuarios/base.html' %}
+{% load static %}
+
+{% block title %}TITAN GYM SENA - Rutina de Entrenamiento{% endblock %}
+
+{% block content %}
+        <!-- ==========================================================
+        ESTRUCTURA PRINCIPAL: VISTA MI RUTINA
+        Contiene la barra superior, resumen de rutina, días de entrenamiento,
+        lista de ejercicios y la sección de progreso con métricas.
+        ========================================================== -->
+        <main class="layout__content">
+
+            <!-- 1. ENCABEZADO DE LA VISTA (TOPBAR) -->
+            <header class="topbar">
+                <h1 class="topbar__title">Rutina  </h1>
+                <div class="topbar__actions">
+                    <button class="topbar__icon-btn" aria-label="Notificaciones">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="notification-dot"></span>
+                    </button>
+                    <div class="topbar__avatar">
+                        <img src="{% static 'assets/img/perfil-usuario-william.jpg' %}" alt="Foto de Perfil">
+                    </div>
+                </div>
+            </header>
+
+            <!-- 2. TARJETA RESUMEN DE LA RUTINA -->
+            <section class="routine-summary-card">
+                <div class="routine-summary__header">
+                    <i class="fa-solid fa-clipboard-list routine-summary__icon"></i>
+                    <h2>Rutina de entrenamiento</h2>
+                </div>
+
+                <div class="routine-summary__grid">
+                    <div class="summary-item">
+                        <span class="summary-item__label">Nombre de la rutina</span>
+                        <strong class="summary-item__value">Rutina de fuerza - Nivel Inicial</strong>
+                    </div>
+
+                    <div class="summary-item">
+                        <span class="summary-item__label">Instructor asignado</span>
+                        <span class="summary-item__value"><i class="fa-solid fa-user-gear"></i> Tatiana Giraldo </span>
+                    </div>
+
+                    <div class="summary-item summary-item--status">
+                        <span class="summary-item__label">Estado</span>
+                        <span class="badge badge--success">● Activa</span>
+                    </div>
+
+                    <div class="summary-item">
+                        <span class="summary-item__label">Fecha</span>
+                        <strong class="summary-item__value">Hoy</strong>
+                    </div>
+
+                    <div class="summary-item">
+                        <span class="summary-item__label">Objetivo</span>
+                        <span class="summary-item__value">Mejoramiento de fuerza</span>
+                    </div>
+
+                    <div class="summary-item summary-item--progress">
+                        <div class="progress-info">
+                            <span class="summary-item__label">Progreso semanal (3/5 sesiones)</span>
+                            <span class="progress-percent">60%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-bar__fill" style="width: 60%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. MENSAJE DESTACADO DEL INSTRUCTOR -->
+            <div class="instructor-alert">
+                <div class="instructor-alert__icon">
+                    <i class="fa-regular fa-comment-dots"></i>
+                </div>
+                <p class="instructor-alert__text">
+                    <strong>Mensaje de tu instructor (Tatiana Giraldo)</strong><br>
+                    "Recuerda realizar un calentamiento de 10 minutos antes de comenzar la rutina."
+                </p>
+            </div>
+
+            <!-- 4. CALENDARIO: DÍAS DE ENTRENAMIENTO -->
+            <section class="training-days">
+                <h2 class="section-title">Días de entrenamiento</h2>
+                <div class="days-grid">
+                    <div class="day-card">
+                        <span class="day-card__name">Lun</span>
+                        <span class="day-card__num">12</span>
+                        <span class="day-card__dot"></span>
+                    </div>
+                    <div class="day-card">
+                        <span class="day-card__name">Mar</span>
+                        <span class="day-card__num">13</span>
+                        <span class="day-card__dot"></span>
+                    </div>
+                    <div class="day-card day-card--active">
+                        <span class="day-card__name">Mié</span>
+                        <span class="day-card__num">14</span>
+                        <span class="day-card__dot day-card__dot--orange"></span>
+                    </div>
+                    <div class="day-card">
+                        <span class="day-card__name">Jue</span>
+                        <span class="day-card__num">15</span>
+                        <span class="day-card__dot"></span>
+                    </div>
+                    <div class="day-card">
+                        <span class="day-card__name">Vie</span>
+                        <span class="day-card__num">16</span>
+                        <span class="day-card__dot"></span>
+                    </div>
+                    <div class="day-card day-card--rest">
+                        <span class="day-card__name">Sáb</span>
+                        <span class="day-card__num">17</span>
+                        <span class="day-card__rest-text">Descanso</span>
+                    </div>
+                    <div class="day-card day-card--rest">
+                        <span class="day-card__name">Dom</span>
+                        <span class="day-card__num">18</span>
+                        <span class="day-card__rest-text">Descanso</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. LISTA DE EJERCICIOS DE HOY -->
+            <section class="today-exercises">
+                <h2 class="section-title">Ejercicios de hoy</h2>
+
+                <!-- Ejercicio Destacado (En curso) -->
+                <article class="exercise-card exercise-card--active">
+                    <div class="exercise-card__top">
+                        <div class="exercise-card__info">
+                            <img src="{% static 'assets/img/prensa-pecho.jpg' %}" alt="Prensa" class="exercise-card__img">
+                            <div>
+                                <span class="tag tag--dark">PECHO</span>
+                                <h3 class="exercise-card__title">Prensa de pecho</h3>
+                                <span class="exercise-card__subtitle">Máquina de prensa</span>
+                            </div>
+                        </div>
+                        <span class="status-text status-text--orange">En curso</span>
+                    </div>
+
+                    <!-- Métricas de Sets, Reps, Carga y Descanso -->
+                    <div class="exercise-card__metrics">
+                        <div class="metric-box">
+                            <span class="metric-box__label">Sets</span>
+                            <strong class="metric-box__value">4</strong>
+                        </div>
+                        <div class="metric-box">
+                            <span class="metric-box__label">Reps</span>
+                            <strong class="metric-box__value">12</strong>
+                        </div>
+                        <div class="metric-box">
+                            <span class="metric-box__label">Carga</span>
+                            <strong class="metric-box__value">30kg</strong>
+                        </div>
+                        <div class="metric-box">
+                            <span class="metric-box__label">Descanso</span>
+                            <strong class="metric-box__value">60s</strong>
+                        </div>
+                    </div>
+
+                    <div class="exercise-card__action">
+                        <button class="btn btn--orange">Ver ejercicio</button>
+                    </div>
+                </article>
+
+                <!-- Lista de Ejercicios Colapsados -->
+                <article class="exercise-item">
+                    <div class="exercise-item__left">
+                        <div class="exercise-item__icon"><i class="fa-solid fa-dumbbell"></i></div>
+                        <div>
+                            <h3 class="exercise-item__title">Jalón al pecho</h3>
+                            <span class="exercise-item__subtitle">Espalda - 4 x 12 - 40kg</span>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right exercise-item__arrow"></i>
+                </article>
+
+                <article class="exercise-item">
+                    <div class="exercise-item__left">
+                        <div class="exercise-item__icon"><i class="fa-solid fa-dumbbell"></i></div>
+                        <div>
+                            <h3 class="exercise-item__title">Sentadilla en máquina</h3>
+                            <span class="exercise-item__subtitle">Piernas - 4 x 10 - 60kg</span>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right exercise-item__arrow"></i>
+                </article>
+
+                <article class="exercise-item">
+                    <div class="exercise-item__left">
+                        <div class="exercise-item__icon"><i class="fa-solid fa-dumbbell"></i></div>
+                        <div>
+                            <h3 class="exercise-item__title">Curl de bíceps</h3>
+                            <span class="exercise-item__subtitle">Brazos - 3 x 15 - 15kg</span>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right exercise-item__arrow"></i>
+                </article>
+
+                <article class="exercise-item">
+                    <div class="exercise-item__left">
+                        <div class="exercise-item__icon"><i class="fa-solid fa-dumbbell"></i></div>
+                        <div>
+                            <h3 class="exercise-item__title">Extensión de tríceps</h3>
+                            <span class="exercise-item__subtitle">Brazos - 3 x 15 - 20kg</span>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right exercise-item__arrow"></i>
+                </article>
+            </section>
+
+        </main>
+{% endblock %}

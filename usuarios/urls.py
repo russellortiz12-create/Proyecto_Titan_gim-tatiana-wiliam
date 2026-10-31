@@ -1,8 +1,15 @@
-from django.urls import path #<-- importa funcion desde las librerias de Django
-from .views import login_view
-"""Importa la función login_view que creamos en el archivo 
-views.py de la carpeta actual (el punto . significa aquí mismo)."""
+from django.urls import path
+from . import views
 
 urlpatterns = [
-    path('', login_view, name='login'), # Al entrar a la raíz, muestra el login
+    # Ruta del Login principal
+    path('', views.login_view, name='login'),
+    path('registro/', views.registro_view, name='registro'),
+    
+    # Rutas del Módulo de Usuario (Navegación del Sidebar)
+    path('inicio/', views.index_usuario_view, name='index_usuario'),
+    path('perfil/', views.perfil_usuario_view, name='perfil_usuario'),
+    path('rutina/', views.rutina_usuario_view, name='rutina_usuario'),
+    path('progreso/', views.progreso_usuario_view, name='progreso_usuario'),
+    path('sugerencias/', views.sugerencias_usuario_view, name='sugerencias_usuario'),
 ]

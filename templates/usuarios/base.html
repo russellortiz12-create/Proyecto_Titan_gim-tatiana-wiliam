@@ -1,0 +1,82 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}TITAN GYM SENA{% endblock %}</title>
+
+    <!-- 1. FUENTES Y LIBRERÍAS EXTERNAS -->
+    <link rel="stylesheet" href="{% static 'assets/fonts/poppins/poppins.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/fonts/fontawesome-free-6.1.2-web/css/all.css' %}">
+
+    <!-- 2. RESET Y ESTILOS -->
+    <link rel="stylesheet" href="{% static 'assets/css/reset.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/styles.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <!-- Contenedor principal global -->
+    <div class="layout">
+        
+        <!-- BARRA LATERAL (ASIDE) - ¡Común para todas las vistas del usuario! -->
+        <aside class="layout__sidebar">
+            <div class="sidebar__user">
+                <img src="{% static 'assets/img/logo-titan-sena.png' %}" class="sidebar__logo" alt="Logo TITAN GYM SENA">
+            </div>
+
+            <nav class="sidebar__menu">
+                <ul class="menu__list">
+                    <li class="menu__option">
+                        <a href="{% url 'index_usuario' %}" class="menu__link {% if request.resolver_match.url_name == 'index_usuario' %}menu__link--active{% endif %}">
+                            <i class="fa-solid fa-house"></i>
+                            <span>Inicio</span>
+                        </a>
+                    </li>
+                    <li class="menu__option">
+                        <a href="{% url 'perfil_usuario' %}" class="menu__link {% if request.resolver_match.url_name == 'perfil_usuario' %}menu__link--active{% endif %}">
+                            <i class="fa-solid fa-user"></i>
+                            <span>Perfil</span>
+                        </a>
+                    </li>
+                    <li class="menu__option">
+                        <a href="{% url 'rutina_usuario' %}" class="menu__link {% if request.resolver_match.url_name == 'rutina_usuario' %}menu__link--active{% endif %}">
+                            <i class="fa-solid fa-dumbbell"></i>
+                            <span>Rutina</span>
+                        </a>
+                    </li>
+                    <li class="menu__option">
+                        <a href="{% url 'progreso_usuario' %}" class="menu__link {% if request.resolver_match.url_name == 'progreso_usuario' %}menu__link--active{% endif %}">
+                            <i class="fa-solid fa-chart-line"></i>
+                            <span>Progreso</span>
+                        </a>
+                    </li>
+                    <li class="menu__option">
+                        <a href="{% url 'sugerencias_usuario' %}" class="menu__link {% if request.resolver_match.url_name == 'sugerencias_usuario' %}menu__link--active{% endif %}">
+                            <i class="fa-solid fa-inbox"></i>
+                            <span>Sugerencias</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="sidebar__logout">
+                <form action="{% url 'login' %}" method="get" style="display:inline;">
+                    <button type="submit" class="menu__link" style="border: none; background: transparent; cursor: pointer; width: 100%; text-align: left;">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span>Salir</span>
+                    </button>
+                </form>
+            </div>
+        </aside>
+
+        <!-- AQUÍ SE INYECTA EL CONTENIDO ESPECÍFICO DE CADA VISTA (Inicio, Perfil, Rutina, etc.) -->
+        {% block content %}
+        {% endblock %}
+
+    </div> 
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

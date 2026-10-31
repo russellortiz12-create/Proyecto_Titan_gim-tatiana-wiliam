@@ -1,24 +1,25 @@
-{% load static %}
+{% load static %} <!-- Carga la librería de archivos estáticos de Django para permitirnos enlazar CSS, JS e imágenes -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TITAN GYM SENA - TATIANA & WILLIAM</title>
+    <meta charset="UTF-8"> <!-- Configura la codificación de caracteres a UTF-8 para admitir tildes y eñes correctamente -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Hace que la interfaz sea responsiva y se adapte a celulares o pantallas -->
+    <title>TITAN GYM SENA - TATIANA & WILLIAM</title> <!-- Título que se visualiza en la pestaña del navegador -->
     
-    <!-- Rutas estáticas correctas con su respectiva ruta entre comillas -->
-    <link rel="stylesheet" href="{% static 'assets/css/reset.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/styles.css' %}"> 
+    <!-- Enlaces a las hojas de estilos (CSS) utilizando las rutas estáticas seguras de Django -->
+    <link rel="stylesheet" href="{% static 'assets/css/reset.css' %}"> <!-- Archivo para limpiar los estilos por defecto del navegador -->
+    <link rel="stylesheet" href="{% static 'assets/css/styles.css' %}"> <!-- Estilos principales del diseño visual del login -->
     
-    <!-- Fuentes e iconos -->
-    <link rel="stylesheet" href="{% static 'assets/fonts/fontawesome-free-6.1.2-web/css/all.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/fonts/poppins/poppins.css' %}">
+    <!-- Enlaces a recursos externos de fuentes e iconos -->
+    <link rel="stylesheet" href="{% static 'assets/fonts/fontawesome-free-6.1.2-web/css/all.css' %}"> <!-- Iconos vectoriales (sobre, candado) -->
+    <link rel="stylesheet" href="{% static 'assets/fonts/poppins/poppins.css' %}"> <!-- Tipografía principal del proyecto (Poppins) -->
 </head>
-<body class="login-body">
+<body class="login-body"> <!-- Cuerpo de la página con una clase específica para el fondo general del login -->
 
+    <!-- Contenedor principal que divide la interfaz en dos columnas (panel izquierdo visual y panel derecho con formulario) -->
     <div class="login-container">
         
-        <!-- PANEL IZQUIERDO -->
+        <!-- PANEL IZQUIERDO: Contiene los elementos visuales, el fondo institucional y el logotipo del gimnasio -->
         <div class="login-left">
             <div class="login-left__bg"></div>
             <div class="login-left__overlay">
@@ -29,39 +30,52 @@
             </div>
         </div>
 
-        <!-- PANEL DERECHO: FORMULARIO -->
+        <!-- PANEL DERECHO: Contiene el encabezado de bienvenida, el formulario de acceso y el pie de página -->
         <div class="login-right">
             <div class="login-right__wrapper">
                 
+                <!-- Encabezado de la sección de acceso -->
                 <div class="login-header">
                     <h1 class="login-header__title">Bienvenido</h1>
                     <p class="login-header__subtitle">Inicia sesión para continuar en TITAN GYM SENA.</p>
                 </div>
 
-                <!-- FORMULARIO DE DJANGO -->
-                <!-- Nota: Más adelante conectaremos este form con el sistema de autenticación de Django -->
-                <form class="login-form" action="" method="post">
-                    {% csrf_token %} <!-- ¡Clave en Django! Token de seguridad obligatorio para formularios POST -->
+                <!-- FORMULARIO DE ACCESO CONECTADO CON EL BACKEND DE DJANGO -->
+                <form class="login-form" action="{% url 'login' %}" method="post">
+                    {% csrf_token %} <!-- Token de seguridad obligatorio en Django para validar solicitudes POST seguras -->
                     
+                    <!-- Grupo de entrada para el correo electrónico institucional -->
                     <div class="form-group">
-                        <label for="email" class="form-group__label">Correo electrónico institucional</label>
+                        <label for="username" class="form-group__label">Correo electrónico institucional</label>
                         <div class="input-icon-wrapper">
-                            <i class="fa-regular fa-envelope input-icon"></i>
-                            <input type="email" id="email" name="email" class="form-group__input" placeholder="usuario@soy.sena.edu.co" required>
+                            <i class="fa-regular fa-envelope input-icon"></i> <!-- Icono decorativo de correo -->
+                            <input type="email" id="username" name="username" class="form-group__input" placeholder="usuario@soy.sena.edu.co" required>
                         </div>
                     </div>
 
+                    <!-- Grupo de entrada para la contraseña de seguridad -->
                     <div class="form-group">
                         <label for="password" class="form-group__label">Contraseña</label>
                         <div class="input-icon-wrapper">
-                            <i class="fa-solid fa-lock input-icon"></i>
+                            <i class="fa-solid fa-lock input-icon"></i> <!-- Icono decorativo de candado -->
                             <input type="password" id="password" name="password" class="form-group__input" placeholder="........" required>
                         </div>
                     </div>
 
+                    <!-- Botón para enviar las credenciales y procesar el inicio de sesión -->
                     <button type="submit" class="btn btn--login">ENTRAR</button>
-                </form>
+                    
+                    <div class="recover-form__back" style="margin-top: 1rem; text-align: center;">
+                    <a href="{% url 'registro' %}" class="back-link" style="color: #666; text-decoration: none; font-size: 0.9rem;">
+                        <i class="fa-solid fa-user-plus"></i> ¿No tienes cuenta? Regístrate aquí
+                    </a>
+                </div>
 
+                </form>
+                <!-- Enlace para redirigir a la vista de creación de cuenta -->
+                
+
+                <!-- Pie de página con la identificación institucional de los desarrolladores -->
                 <footer class="login-footer">
                     <hr><br>
                     <span> Tatiana Giraldo & William Ortiz</span><br>
@@ -72,6 +86,7 @@
         </div>
     </div>
 
+    <!-- Archivo de JavaScript para la lógica interactiva del login -->
     <script src="{% static 'assets/js/login.js' %}"></script>
 </body>
 </html>

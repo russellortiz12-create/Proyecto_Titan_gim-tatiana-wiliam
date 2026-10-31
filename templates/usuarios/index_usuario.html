@@ -1,0 +1,38 @@
+{% extends 'usuarios/base.html' %}
+{% load static %}
+
+{% block title %}TITAN GYM SENA - Inicio Usuario{% endblock %}
+
+{% block content %}
+        <!-- CONTENIDO PRINCIPAL (MAIN): Vista activa del usuario -->
+        <main class="layout__content">
+            
+            <!-- Encabezado con bienvenida y acciones rápidas -->
+            <header class="topbar">
+                <div class="topbar__greeting">
+                    <h1 class="header__title">¡Hola, {{ request.user.first_name|default:request.user.username }}! 😎</h1>
+                    <p class="header__subtitle">Este es el resumen de tu actividad general en TITAN GYM SENA.</p>
+                </div>
+                
+                <div class="topbar__actions">
+                    <button class="topbar__icon-btn" aria-label="Notificaciones">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="notification-dot"></span>
+                    </button>
+                    <div class="topbar__avatar">
+                        <img src="{% static 'assets/img/perfil-usuario-william.jpg' %}" alt="Foto de Perfil">
+                    </div>
+                </div>
+            </header>
+
+            <!-- Resto de tarjetas del index... -->
+            <section class="dashboard__metrics">
+                <!-- Tus tarjetas de rutina, métricas, etc. -->
+            </section>
+
+        </main>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'assets/js/main.js' %}"></script>
+{% endblock %}

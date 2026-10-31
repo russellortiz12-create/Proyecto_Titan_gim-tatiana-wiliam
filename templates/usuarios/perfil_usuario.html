@@ -1,0 +1,166 @@
+{% extends 'usuarios/base.html' %}
+{% load static %}
+
+{% block title %}TITAN GYM SENA - Perfil de Usuario{% endblock %}
+
+{% block content %}
+        <!-- CONTENIDO PRINCIPAL: PERFIL DE USUARIO -->
+        <main class="layout__content">
+
+            <!-- BARRA SUPERIOR (HEADER) -->
+            <header class="topbar">
+                <h1 class="topbar__title">Perfil </h1>
+                <div class="topbar__actions">
+                    <button class="topbar__icon-btn" aria-label="Notificaciones">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="notification-dot"></span>
+                    </button>
+                    <div class="topbar__avatar">
+                        <img src="{% static 'assets/img/perfil-usuario-william.jpg' %}" alt="Foto de Perfil">
+                    </div>
+                </div>
+            </header>
+
+            <!-- TARJETA SUPERIOR: PERFIL RESUMEN -->
+            <section class="profile-header-card">
+                <div class="profile-header__main">
+                    <div class="profile-header__avatar">
+                        <img src="{% static 'assets/img/perfil-usuario-william.jpg' %}" alt="William Ortiz">
+                    </div>
+                    <div class="profile-header__info">
+                        <h2 class="profile-header__name">William Ortiz</h2>
+                        <span class="profile-header__doc">TI 1064677168</span>
+                        <div class="profile-header__tags">
+                            <span class="badge badge--gray">Usuario</span>
+                            <span class="badge badge--gray">Programa: Tecnólogo en Análisis y Desarrollo de Software</span>
+                            <span class="badge badge--success">• Activo</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn--edit">Editar perfil</button>
+            </section>
+
+            <!-- GRID CON SECCIONES DE INFORMACIÓN -->
+            <section class="profile-grid">
+
+                <!-- INFORMACIÓN PERSONAL -->
+                <article class="profile-card">
+                    <h3 class="profile-card__title">Información Personal</h3>
+                    <div class="profile-card__body">
+                        
+                        <div class="info-item info-item--stacked">
+                            <div class="info-item__header">
+                                <i class="fa-regular fa-user info-item__icon"></i>
+                                <span class="info-item__label">Nombres</span>
+                            </div>
+                            <strong class="info-item__value">William</strong>
+                        </div>
+
+                        <div class="info-item info-item--stacked">
+                            <div class="info-item__header">
+                                <i class="fa-regular fa-user info-item__icon"></i>
+                                <span class="info-item__label">Apellidos</span>
+                            </div>
+                            <strong class="info-item__value">Ortiz</strong>
+                        </div>
+
+                        <div class="info-item info-item--stacked">
+                            <div class="info-item__header">
+                                <i class="fa-regular fa-id-card info-item__icon"></i>
+                                <span class="info-item__label">Tipo Documento</span>
+                            </div>
+                            <strong class="info-item__value">Tarjeta de Identidad (TI)</strong>
+                        </div>
+
+                        <div class="info-item info-item--stacked">
+                            <div class="info-item__header">
+                                <i class="fa-solid fa-hashtag info-item__icon"></i>
+                                <span class="info-item__label">Número Documento</span>
+                            </div>
+                            <strong class="info-item__value">1064677168</strong>
+                        </div>
+
+                        <div class="info-item info-item--stacked">
+                            <div class="info-item__header">
+                                <i class="fa-regular fa-calendar info-item__icon"></i>
+                                <span class="info-item__label">Fecha de Nacimiento</span>
+                            </div>
+                            <strong class="info-item__value">15/04/2004</strong>
+                        </div>
+
+                    </div>
+                </article>
+
+                <!-- INFORMACIÓN ACADÉMICA -->
+                <article class="profile-card">
+                    <h3 class="profile-card__title">Información Académica</h3>
+                    <div class="profile-card__body">
+
+                        <div class="info-item info-item--stacked">
+                            <div class="info-item__header">
+                                <i class="fa-solid fa-graduation-cap info-item__icon"></i>
+                                <span class="info-item__label">Programa</span>
+                            </div>
+                            <strong class="info-item__value">Tecnólogo en Análisis y Desarrollo de Software</strong>
+                        </div>
+
+                        <div class="info-item info-item--stacked">
+                            <div class="info-item__header">
+                                <i class="fa-solid fa-hashtag info-item__icon"></i>
+                                <span class="info-item__label">Ficha</span>
+                            </div>
+                            <strong class="info-item__value">3387753</strong>
+                        </div>
+
+                        <div class="info-item info-item--stacked">
+                            <div class="info-item__header">
+                                <i class="fa-regular fa-clock info-item__icon"></i>
+                                <span class="info-item__label">Jornada</span>
+                            </div>
+                            <strong class="info-item__value">Diurna</strong>
+                        </div>
+
+                        <div class="info-item info-item--stacked">
+                            <div class="info-item__header">
+                                <i class="fa-solid fa-building-columns info-item__icon"></i>
+                                <span class="info-item__label">Centro</span>
+                            </div>
+                            <strong class="info-item__value">Sena Centro Agropecuario</strong>
+                        </div>
+
+                    </div>
+                </article>
+
+                <!-- INFORMACIÓN DE CONTACTO -->
+                <article class="profile-card profile-card--full">
+                    <h3 class="profile-card__title">Información de Contacto</h3>
+                    <div class="profile-card__body">
+                        
+                        <div class="info-item info-item--stacked">
+                            <div class="info-item__header">
+                                <i class="fa-regular fa-envelope info-item__icon"></i>
+                                <span class="info-item__label">Email</span>
+                            </div>
+                            <strong class="info-item__value">wortiz@soy.sena.edu.co</strong>
+                        </div>
+
+                        <div class="info-item info-item--stacked">
+                            <div class="info-item__header">
+                                <i class="fa-solid fa-phone info-item__icon"></i>
+                                <span class="info-item__label">Teléfono</span>
+                            </div>
+                            <strong class="info-item__value">+57 3147390873</strong>
+                        </div>
+
+                        <div class="emergency-contact">
+                            <span class="emergency-contact__label">Contacto de Emergencia</span>
+                            <strong class="emergency-contact__name">Marta Omen (Madre)</strong>
+                            <p class="emergency-contact__phone">+57 310 987 6543</p>
+                        </div>
+
+                    </div>
+                </article>
+
+            </section>
+        </main>
+{% endblock %}

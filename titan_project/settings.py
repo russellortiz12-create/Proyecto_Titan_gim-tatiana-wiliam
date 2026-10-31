@@ -96,7 +96,9 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',  #<-- aqui se hace los cambio y cantidad de caracteres de la contraseña
+                                                                                                                                        #<-- debo agregar ,mas asi que hay que investigar l
+                                                                                                                                        #<-- el instructor mioises indico que tocaba hacer todas estas intervenciones 
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
